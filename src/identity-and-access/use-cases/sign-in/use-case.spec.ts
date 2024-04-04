@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { StubUserRepository } from "../../infrastructure/repositories/doubles/stub-user.repository";
-import { SignInQuery } from "./query";
-import { SignInUseCase } from "./use-case";
+import { StubUserRepository } from "@identity-and-access/infrastructure/repositories/doubles/stub-user.repository.js";
+import { SignInQuery } from "@identity-and-access/use-cases/sign-in/query.js";
+import { SignInUseCase } from "@identity-and-access/use-cases/sign-in/use-case.js";
 
 describe("SignInUseCase", () => {
   const repository = new StubUserRepository();

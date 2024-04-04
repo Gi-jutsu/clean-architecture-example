@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "paths": {
+      "@identity-and-access/*": ["./src/identity-and-access/*"]
+    },
+    "target": "ESNext"
+  }
+}

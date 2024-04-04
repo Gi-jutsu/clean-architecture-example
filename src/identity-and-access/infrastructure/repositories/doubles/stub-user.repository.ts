@@ -1,5 +1,5 @@
-import type { User } from "../../../domain/user/aggregate-root";
-import type { UserRepository } from "../../../domain/user/repository";
+import type { User } from "@identity-and-access/domain/user/aggregate-root.js";
+import type { UserRepository } from "@identity-and-access/domain/user/repository.js";
 
 export class StubUserRepository implements UserRepository {
   public readonly users: User[] = [];
