@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { StubUserRepository } from "../../../adapters/repositories/doubles/stub-user.repository";
+import { StubUserRepository } from "../../infrastructure/repositories/doubles/stub-user.repository";
 import { SignUpCommand } from "./command";
 import { SignUpUseCase } from "./use-case";
 
