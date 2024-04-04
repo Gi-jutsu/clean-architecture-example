@@ -1,22 +1,22 @@
 interface UserProperties {
   id: string;
-  email: string;
-  password: string;
+  credentials: {
+    email: string;
+    password: string;
+  };
 }
 
 interface CreateUserProperties {
-  email: string;
-  password: string;
+  credentials: UserProperties["credentials"];
 }
 
 export class User {
   constructor(
     public readonly id: UserProperties["id"],
-    public readonly email: UserProperties["email"],
-    public readonly password: UserProperties["password"]
+    public readonly credentials: UserProperties["credentials"]
   ) {}
 
   static create(properties: CreateUserProperties) {
-    return new User("fake-id", properties.email, properties.password);
+    return new User("fake-id", properties.credentials);
   }
 }

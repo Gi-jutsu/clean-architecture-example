@@ -23,8 +23,10 @@ describe("SignUpUseCase", () => {
     expect(repository.users).toEqual([
       {
         id: expect.any(String),
-        email: credentials.email,
-        password: credentials.password,
+        credentials: {
+          email: credentials.email,
+          password: credentials.password,
+        },
       },
     ]);
   });
