@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { User } from "@identity-and-access/domain/user/aggregate-root.js";
 import { StubUserRepository } from "@identity-and-access/infrastructure/repositories/doubles/stub-user.repository.js";
 import { SignUpCommand } from "@identity-and-access/use-cases/sign-up/command.js";
 import { SignUpUseCase } from "@identity-and-access/use-cases/sign-up/use-case.js";
@@ -21,13 +22,10 @@ describe("SignUpUseCase", () => {
 
     // Assert
     expect(repository.users).toEqual([
-      {
+      User.hydrate({
         id: expect.any(String),
-        credentials: {
-          email: credentials.email,
-          password: credentials.password,
-        },
-      },
+        credentials,
+      }),
     ]);
   });
 });

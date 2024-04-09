@@ -6,7 +6,9 @@ export class SignUpUseCase {
   constructor(private readonly repository: UserRepository) {}
 
   async execute(command: SignUpCommand): Promise<void> {
-    const user = User.create(command);
+    const user = User.create({
+      credentials: command.credentials,
+    });
 
     this.repository.save(user);
   }
