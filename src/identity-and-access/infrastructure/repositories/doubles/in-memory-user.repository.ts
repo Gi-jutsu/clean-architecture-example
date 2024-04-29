@@ -1,7 +1,7 @@
 import type { User } from "@identity-and-access/domain/user/aggregate-root.js";
 import type { UserRepository } from "@identity-and-access/domain/user/repository.js";
 
-export class StubUserRepository implements UserRepository {
+export class InMemoryUserRepository implements UserRepository {
   public readonly users: User[] = [];
 
   public async existsByCredentials(

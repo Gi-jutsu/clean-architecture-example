@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { StubUserRepository } from "@identity-and-access/infrastructure/repositories/doubles/stub-user.repository.js";
+import { InMemoryUserRepository } from "@identity-and-access/infrastructure/repositories/doubles/in-memory-user.repository.js";
 import { SignInQuery } from "@identity-and-access/use-cases/sign-in/query.js";
 import { SignInUseCase } from "@identity-and-access/use-cases/sign-in/use-case.js";
 import { User } from "@identity-and-access/domain/user/aggregate-root.js";
 
 describe("SignInUseCase", () => {
-  const repository = new StubUserRepository();
+  const repository = new InMemoryUserRepository();
   const useCase = new SignInUseCase(repository);
 
   it("should throw an error when the user does not exist", async () => {
