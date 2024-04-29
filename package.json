@@ -1,12 +1,23 @@
 {
   "type": "module",
   "scripts": {
+    "build": "swc ./src --ignore **/*.spec.ts --out-dir ./build --strip-leading-paths",
+    "start": "node ./build/main.js",
     "test": "vitest"
   },
   "devDependencies": {
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "^1.4.17",
     "@types/node": "^20.12.7",
-    "@vitest/coverage-v8": "^1.4.0",
+    "@vitest/coverage-v8": "^1.5.2",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^1.4.0"
+    "vitest": "^1.5.2"
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.3.8",
+    "@nestjs/core": "^10.3.8",
+    "@nestjs/platform-express": "^10.3.8",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
   }
 }
