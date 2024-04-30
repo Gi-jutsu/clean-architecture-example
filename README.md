@@ -20,6 +20,8 @@
 ## <a id="getting-started" name="getting-started">🚀 Getting Started</a>
 
 ```shell
-# Run unitary tests
-pnpm test
+# Install all the dependencies
+pnpm i
+# Run the application in development mode
+pnpm development
 ```
