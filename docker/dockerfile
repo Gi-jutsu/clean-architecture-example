@@ -1,7 +1,6 @@
 FROM node:20-alpine as base
 
 WORKDIR /opt/backend
-RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml ./
 
 FROM base AS builder
@@ -12,6 +11,7 @@ COPY .nvmrc \
     ./
 # Optimize the release image by installing only production dependencies
 # This will allow us to discard every artifact from the `pnpm install`
+RUN npm install -g pnpm
 RUN pnpm install --frozen-lockfile --prod
 COPY node_modules ./production_node_modules
 RUN pnpm install --frozen-lockfile
