@@ -2,7 +2,7 @@ import { CodeReviewRequest } from "../../domain/code-review-request/aggregate-ro
 import type { CodeReviewRequestRepository } from "../../domain/code-review-request/repository.js";
 import type { AskForCodeReviewCommand } from "./command.js";
 
-export class AskForCodeReview {
+export class AskForCodeReviewUseCase {
   constructor(private readonly repository: CodeReviewRequestRepository) {}
 
   async execute(command: AskForCodeReviewCommand): Promise<void> {
