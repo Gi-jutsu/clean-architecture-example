@@ -1,7 +1,16 @@
+import {
+  DockerComposeEnvironment,
+  type StartedDockerComposeEnvironment,
+} from "testcontainers";
+
+let environment: StartedDockerComposeEnvironment;
+
 export async function setup() {
-  console.log("setup ...");
+  environment = await new DockerComposeEnvironment("docker", [
+    "docker-compose.yaml",
+  ]).up();
 }
 
 export async function teardown() {
-  console.log("teardown ...");
+  await environment.down();
 }

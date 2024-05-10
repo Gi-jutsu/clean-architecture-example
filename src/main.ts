@@ -11,7 +11,7 @@ async function bootstrap() {
   const url = `${scheme}://${host}:${port}`;
 
   await application.listen(port, host, () =>
-    console.log(`🚀 API is running on ${url}`)
+    console.log(`🚀 API is listening on ${url}`)
   );
 }
 
