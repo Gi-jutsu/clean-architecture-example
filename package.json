@@ -6,7 +6,8 @@
     "start": "node ./build/main.js",
     "start:watch": "chokidar build/**/*.js --initial -c \"pnpm run restart\"",
     "restart": "lsof -ti tcp:8080 | xargs kill -15 && node ./build/main.js",
-    "test": "vitest"
+    "test": "vitest",
+    "test:e2e": "vitest --config ./vitest.e2e.config.ts"
   },
   "devDependencies": {
     "@swc/cli": "^0.3.12",
