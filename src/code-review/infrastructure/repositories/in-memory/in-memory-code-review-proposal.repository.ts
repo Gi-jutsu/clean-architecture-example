@@ -4,10 +4,10 @@ import type { CodeReviewProposalRepository } from "../../../domain/code-review-p
 export class InMemoryCodeReviewProposalRepository
   implements CodeReviewProposalRepository
 {
-  public readonly proposals: CodeReviewProposal[] = [];
+  public readonly records: CodeReviewProposal[] = [];
 
-  save(proposals: CodeReviewProposal): Promise<void> {
-    this.proposals.push(proposals);
+  save(proposal: CodeReviewProposal): Promise<void> {
+    this.records.push(proposal);
     return Promise.resolve();
   }
 }
