@@ -25,3 +25,9 @@ pnpm i
 # Run the application in development mode
 pnpm development
 ```
+
+    "build": "swc ./src --ignore **/*.spec.ts --out-dir ./build --strip-leading-paths",
+    "development": "pnpm start:watch --silent & pnpm build --quiet --watch",
+    "start": "node ./build/main.js",
+    "start:watch": "chokidar build/**/*.js --initial -c \"pnpm run restart\"",
+    "restart": "lsof -ti tcp:8080 | xargs kill -15 && node ./build/main.js",

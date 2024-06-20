@@ -2,10 +2,10 @@
   "type": "module",
   "scripts": {
     "build": "swc ./src --ignore **/*.spec.ts --out-dir ./build --strip-leading-paths",
-    "development": "pnpm start:watch --silent & pnpm build --quiet --watch",
+    "build:watch": "pnpm build --watch",
     "start": "node ./build/main.js",
-    "start:watch": "chokidar build/**/*.js --initial -c \"pnpm run restart\"",
-    "restart": "lsof -ti tcp:8080 | xargs kill -15 && node ./build/main.js",
+    "start:development": "concurrently \"pnpm start:watch\" \"pnpm build:watch\"",
+    "start:watch": "chokidar --silent './build/**/*.js' -c 'kill-port 8080 && pnpm start'",
     "test": "vitest"
   },
   "devDependencies": {
@@ -14,6 +14,8 @@
     "@types/node": "^20.14.7",
     "@vitest/coverage-v8": "^1.6.0",
     "chokidar-cli": "^3.0.0",
+    "concurrently": "^8.2.2",
+    "kill-port": "^2.0.1",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.6.0"
   },
