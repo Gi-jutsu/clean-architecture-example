@@ -7,5 +7,6 @@ export default defineConfig({
     coverage: {
       provider: "v8",
     },
+    exclude: ["build", "node_modules"],
   },
 });

@@ -4,7 +4,7 @@
     "build": "swc ./src --ignore **/*.spec.ts --out-dir ./build --strip-leading-paths",
     "build:watch": "pnpm build --watch",
     "start": "node ./build/main.js",
-    "start:development": "concurrently \"pnpm start:watch\" \"pnpm build:watch\"",
+    "start:development": "concurrently -n API,BUILD \"pnpm start:watch\" \"pnpm build:watch\"",
     "start:watch": "chokidar --silent './build/**/*.js' -c 'kill-port 8080 && pnpm start'",
     "test": "vitest"
   },
