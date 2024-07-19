@@ -6,7 +6,13 @@
       "decorators": true,
       "syntax": "typescript"
     },
-    "target": "esnext"
+    "paths": {
+      "@identity-and-access/*": ["./src/identity-and-access/*"]
+    },
+    "target": "esnext",
+    "transform": {
+      "decoratorMetadata": true
+    }
   },
   "minify": true
 }
