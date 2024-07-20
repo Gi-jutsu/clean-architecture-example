@@ -8,6 +8,7 @@ export default defineConfig({
       provider: "v8",
     },
     exclude: ["build", "node_modules"],
+    globalSetup: "specs/global-setup.ts",
     include: ["src/**/*.e2e.spec.ts"],
   },
 });

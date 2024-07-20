@@ -17,6 +17,7 @@
     "chokidar-cli": "^3.0.0",
     "concurrently": "^8.2.2",
     "kill-port": "^2.0.1",
+    "testcontainers": "^10.10.4",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.6.0"
   },
