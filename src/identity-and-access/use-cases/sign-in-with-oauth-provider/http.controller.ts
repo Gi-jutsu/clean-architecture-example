@@ -3,29 +3,19 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Redirect,
 } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { SignInWithOAuthProviderUseCase } from "./use-case.js";
 
 @Controller()
 export class SignInWithOAuthProviderHttpController {
-  constructor(private readonly config: ConfigService) {}
+  constructor(private readonly useCase: SignInWithOAuthProviderUseCase) {}
 
-  @Get("/identity-and-access/oauth/google")
+  @Get("/identity-and-access/oauth/:provider")
   @HttpCode(HttpStatus.PERMANENT_REDIRECT)
   @Redirect()
-  async signInWithGoogle() {
-    const baseAuthorizationUrl = `https://accounts.google.com/o/oauth2/v2/auth`;
-    const authorizationUrlParameters = new URLSearchParams({
-      client_id: await this.config.getOrThrow("OAUTH_GOOGLE_CLIENT_ID"),
-      redirect_uri:
-        "http://localhost:8080/identity-and-access/oauth/google/callback",
-      response_type: "code",
-      scope: "email",
-    });
-
-    return {
-      url: `${baseAuthorizationUrl}?${authorizationUrlParameters}`,
-    };
+  async signInWithGoogle(@Param("provider") provider: string) {
+    return await this.useCase.execute({ provider });
   }
 }
