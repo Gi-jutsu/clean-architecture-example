@@ -5,9 +5,7 @@ services:
       context: ../
       dockerfile: ./docker/Dockerfile
     image: backend
-    environment:
-      - API_HTTP_PORT=8080
-      - API_HTTP_HOST=0.0.0.0
-      - API_HTTP_SCHEME=http
+    env_file:
+      - ../.env
     ports:
       - "8080:8080"
