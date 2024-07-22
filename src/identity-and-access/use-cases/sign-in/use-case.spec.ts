@@ -1,8 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { User } from "@identity-and-access/domain/user/aggregate-root.js";
 import { InMemoryUserRepository } from "@identity-and-access/infrastructure/repositories/in-memory/in-memory-user.repository.js";
 import { SignInQuery } from "@identity-and-access/use-cases/sign-in/query.js";
 import { SignInUseCase } from "@identity-and-access/use-cases/sign-in/use-case.js";
-import { User } from "@identity-and-access/domain/user/aggregate-root.js";
+import { describe, expect, it } from "vitest";
 
 describe("SignInUseCase", () => {
   const allUsers = new InMemoryUserRepository();
