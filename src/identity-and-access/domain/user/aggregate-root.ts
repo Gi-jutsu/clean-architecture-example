@@ -1,4 +1,4 @@
-import { AggregateRoot } from "../../../shared-kernel/domain/aggregate-root.base.js";
+import { AggregateRoot } from "@shared-kernel/domain/aggregate-root.base.js";
 
 interface UserProperties {
   credentials: {

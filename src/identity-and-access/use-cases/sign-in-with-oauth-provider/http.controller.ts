@@ -49,7 +49,10 @@ export class SignInWithOAuthProviderHttpController {
       throw new NotImplementedException();
     }
 
-    // @TODO
+    /** @TODO: SignInWithOAuthProviderUseCase should be responsible for
+     * - exchanging the code for tokens
+     * - generating the access and refresh token (RFC 9068)
+     */
     response.cookie("access_token", "<your_token>", { httpOnly: true });
     response.end();
   }

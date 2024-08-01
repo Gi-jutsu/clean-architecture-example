@@ -1,11 +1,11 @@
+import { IdentityAndAccessModule } from "@identity-and-access/identity-and-access.module.js";
 import { SignInWithOAuthProviderHttpController } from "@identity-and-access/use-cases/sign-in-with-oauth-provider/http.controller.js";
-import { HttpModule } from "@nestjs/axios";
 import { Logger, Module, OnApplicationShutdown } from "@nestjs/common";
-import { ConfigModule } from "@nestjs/config";
-import { HealthCheckHttpController } from "./shared-kernel/use-cases/health-check/http.controller.js";
+import { SharedKernelModule } from "@shared-kernel/shared-kernel.module.js";
+import { HealthCheckHttpController } from "@shared-kernel/use-cases/health-check/http.controller.js";
 
 @Module({
-  imports: [ConfigModule.forRoot(), HttpModule],
+  imports: [IdentityAndAccessModule, SharedKernelModule],
   controllers: [
     HealthCheckHttpController,
     SignInWithOAuthProviderHttpController,
