@@ -26,9 +26,11 @@ describe("SignInWithOAuthProviderUseCase", () => {
       );
 
       // Assert
-      expect(response.headers.get("set-cookie")).toMatch(
-        "access_token=%3Cyour_token%3E; Path=/; HttpOnly"
+      const setCookieRegex = new RegExp(
+        "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.[A-Za-z0-9-_]+.[A-Za-z0-9-_]+; Path=/; HttpOnly"
       );
+
+      expect(response.headers.get("set-cookie")).toMatch(setCookieRegex);
     });
   });
 });

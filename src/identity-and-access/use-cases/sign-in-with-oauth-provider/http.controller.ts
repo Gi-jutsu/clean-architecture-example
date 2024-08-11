@@ -3,6 +3,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   NotImplementedException,
   Param,
   Redirect,
@@ -10,10 +11,14 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import type { Response } from "express";
+import { SignInWithOAuthProviderUseCase } from "./use-case.js";
 
 @Controller()
 export class SignInWithOAuthProviderHttpController {
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly useCase: SignInWithOAuthProviderUseCase
+  ) {}
 
   @Get("/identity-and-access/oauth/:provider")
   @HttpCode(HttpStatus.PERMANENT_REDIRECT)
@@ -49,11 +54,16 @@ export class SignInWithOAuthProviderHttpController {
       throw new NotImplementedException();
     }
 
-    /** @TODO: SignInWithOAuthProviderUseCase should be responsible for
-     * - exchanging the code for tokens
-     * - generating the access and refresh token (RFC 9068)
-     */
-    response.cookie("access_token", "<your_token>", { httpOnly: true });
-    response.end();
+    try {
+      const { accessToken } = await this.useCase.execute({
+        code: "<your_code>",
+        provider,
+      });
+
+      response.cookie("access_token", accessToken, { httpOnly: true });
+      response.end();
+    } catch (error: unknown) {
+      throw new InternalServerErrorException();
+    }
   }
 }
