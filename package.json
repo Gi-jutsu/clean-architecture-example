@@ -7,7 +7,7 @@
     "start:development": "concurrently -n API,BUILD \"pnpm start:watch\" \"pnpm build:watch\"",
     "start:watch": "chokidar --silent './build/**/*.js' -c 'kill-port 8080 && pnpm start'",
     "test": "vitest",
-    "test:e2e": "vitest run -c vitest.config.e2e.ts"
+    "test:e2e": "vitest run -c vitest.config.e2e.ts --isolate=false"
   },
   "devDependencies": {
     "@swc/cli": "^0.3.14",
