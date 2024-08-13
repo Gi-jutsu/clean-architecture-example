@@ -44,4 +44,5 @@ jobs:
           echo "API_HTTP_PORT=8080" >> .env
           echo "API_HTTP_SCHEME=http" >> .env
           echo "OAUTH_GOOGLE_REDIRECT_URI=http://localhost:8080/identity-and-access/oauth/google/callback" >> .env
+          docker ps -a
           pnpm test:e2e
