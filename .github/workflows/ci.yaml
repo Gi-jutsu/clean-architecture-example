@@ -40,9 +40,9 @@ jobs:
 
       - name: Run E2E tests
         run: |
-          echo "API_HTTP_HOST=localhost" > .env
+          echo "API_HTTP_HOST=127.0.0.1" > .env
           echo "API_HTTP_PORT=8080" >> .env
           echo "API_HTTP_SCHEME=http" >> .env
-          echo "OAUTH_GOOGLE_REDIRECT_URI=http://localhost:8080/identity-and-access/oauth/google/callback" >> .env
+          echo "OAUTH_GOOGLE_REDIRECT_URI=http://127.0.0.1:8080/identity-and-access/oauth/google/callback" >> .env
           docker ps -a
           pnpm test:e2e
