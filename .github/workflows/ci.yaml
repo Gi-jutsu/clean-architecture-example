@@ -46,3 +46,5 @@ jobs:
           echo "OAUTH_GOOGLE_REDIRECT_URI=http://127.0.0.1:8080/identity-and-access/oauth/google/callback" >> .env
           docker ps -a
           pnpm test:e2e
+        env:
+          DOCKER_HOST: unix:///var/run/docker.sock
