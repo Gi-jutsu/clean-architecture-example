@@ -4,13 +4,12 @@ WORKDIR /opt/backend
 COPY package.json pnpm-lock.yaml ./
 
 FROM base AS builder
-# Copy every necessary file for the building stage
 COPY .nvmrc \ 
     .swcrc \
     tsconfig.json \
     ./
-# Optimize the release image by installing only production dependencies
-# This will allow us to discard every artifact from the `pnpm install`
+# Keep a copy of production dependencies for the release image
+# (this will allow us to keep the release image smaller)
 RUN npm install -g pnpm && \
     pnpm install --frozen-lockfile --prod && \
     cp -R node_modules production_node_modules && \
