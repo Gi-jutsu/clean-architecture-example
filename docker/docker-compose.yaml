@@ -4,6 +4,7 @@ services:
       context: ../
       dockerfile: ./docker/Dockerfile
     image: backend
+    container_name: api-1
     env_file:
       - ../.env
     ports:
