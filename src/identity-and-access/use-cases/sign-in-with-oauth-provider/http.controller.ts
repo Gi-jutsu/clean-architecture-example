@@ -29,7 +29,6 @@ export class SignInWithOAuthProviderHttpController {
       throw new NotImplementedException();
     }
 
-    // @TODO: GetAuthorizationUrl should be extracted to a OAuthProviderStrategy
     const baseAuthorizationUrl = "https://accounts.google.com/o/oauth2/v2/auth";
     const authorizationUrlParameters = new URLSearchParams({
       client_id: await this.config.getOrThrow("OAUTH_GOOGLE_CLIENT_ID"),
@@ -60,7 +59,11 @@ export class SignInWithOAuthProviderHttpController {
         provider,
       });
 
-      response.cookie("access_token", accessToken, { httpOnly: true });
+      response.cookie("access_token", accessToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+      });
       response.end();
     } catch (error: unknown) {
       throw new InternalServerErrorException();

@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 
 describe("SignInWithOAuthProviderUseCase", () => {
   it.each`
-    provider    | expectedRedirectUrl
+    provider    | expectedAuthorizationUrl
     ${"google"} | ${"https://accounts.google.com/v3/signin/identifier"}
   `(
     "should initiate the $provider OAuth flow by redirecting to the IDP's authorization endpoint",
-    async ({ provider, expectedRedirectUrl }) => {
+    async ({ provider, expectedAuthorizationUrl }) => {
       // Act
       const response = await fetch(
         `http://localhost:8080/identity-and-access/oauth/${provider}`
@@ -14,23 +14,23 @@ describe("SignInWithOAuthProviderUseCase", () => {
 
       // Assert
       expect(response.redirected).toBe(true);
-      expect(response.url).toMatch(expectedRedirectUrl);
+      expect(response.url).toMatch(expectedAuthorizationUrl);
     }
   );
 
   describe("when the sign-in with the OAuth provider is successful", () => {
-    it("should set an HTTP-only cookie with the access token", async () => {
+    it("should set the jwt access token in a secure, HTTP-only, SameSite=Strict cookie", async () => {
       // Act
       const response = await fetch(
         "http://localhost:8080/identity-and-access/oauth/google/callback"
       );
 
       // Assert
-      const setCookieRegex = new RegExp(
-        "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.[A-Za-z0-9-_]+.[A-Za-z0-9-_]+; Path=/; HttpOnly"
+      const expectedSetCookie = new RegExp(
+        "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.[A-Za-z0-9-_]+.[A-Za-z0-9-_]+; Path=/; HttpOnly; Secure; SameSite=Strict"
       );
 
-      expect(response.headers.get("set-cookie")).toMatch(setCookieRegex);
+      expect(response.headers.get("set-cookie")).toMatch(expectedSetCookie);
     });
   });
 });
