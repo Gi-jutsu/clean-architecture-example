@@ -6,6 +6,7 @@ import {
   InternalServerErrorException,
   NotImplementedException,
   Param,
+  Query,
   Redirect,
   Res,
 } from "@nestjs/common";
@@ -46,7 +47,7 @@ export class SignInWithGoogleHttpController {
   @Get("/identity-and-access/oauth/:provider/callback")
   async exchangeCodeForTokens(
     @Param("provider") provider: string,
-    @Param("code") code: string,
+    @Query("code") code: string,
     @Res() response: Response
   ) {
     // @TODO: Handle more OAuth providers (e.g. Google, Facebook, GitHub)
