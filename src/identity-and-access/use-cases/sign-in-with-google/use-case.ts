@@ -1,13 +1,13 @@
 import { JwtService } from "@identity-and-access/infrastructure/services/jwt.service.js";
 
-/** @TODO: SignInWithOAuthProviderUseCase should be responsible for
+/** @TODO: SignInWithGoogleUseCase should be responsible for
  * - exchanging the code for tokens
  * - generating the access and refresh token (RFC 9068)
  */
-export class SignInWithOAuthProviderUseCase {
+export class SignInWithGoogleUseCase {
   constructor(private readonly jwt: JwtService) {}
 
-  async execute(command: SignInWithOAuthProviderCommand) {
+  async execute(command: SignInWithGoogleCommand) {
     return {
       accessToken: this.jwt.sign(
         {
@@ -17,14 +17,15 @@ export class SignInWithOAuthProviderUseCase {
           sub: "fake_user_id",
           iat: Math.floor(Date.now() / 1000), // now
         },
+        // @TODO: Use an environment variable for the secret
         "secret"
       ),
     };
   }
 }
 
-export type SignInWithOAuthProviderCommand = {
+export type SignInWithGoogleCommand = {
+  // The code received from the Google OAuth callback
+  // @see https://developers.google.com/identity/protocols/oauth2/web-server
   code: string;
-  // @TODO: Add more OAuth providers (e.g. Google, Facebook, GitHub)
-  provider: "google";
 };

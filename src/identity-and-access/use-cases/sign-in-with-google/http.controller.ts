@@ -11,13 +11,13 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import type { Response } from "express";
-import { SignInWithOAuthProviderUseCase } from "./use-case.js";
+import { SignInWithGoogleUseCase } from "./use-case.js";
 
 @Controller()
-export class SignInWithOAuthProviderHttpController {
+export class SignInWithGoogleHttpController {
   constructor(
     private readonly config: ConfigService,
-    private readonly useCase: SignInWithOAuthProviderUseCase
+    private readonly useCase: SignInWithGoogleUseCase
   ) {}
 
   @Get("/identity-and-access/oauth/:provider")
@@ -46,6 +46,7 @@ export class SignInWithOAuthProviderHttpController {
   @Get("/identity-and-access/oauth/:provider/callback")
   async exchangeCodeForTokens(
     @Param("provider") provider: string,
+    @Param("code") code: string,
     @Res() response: Response
   ) {
     // @TODO: Handle more OAuth providers (e.g. Google, Facebook, GitHub)
@@ -54,10 +55,7 @@ export class SignInWithOAuthProviderHttpController {
     }
 
     try {
-      const { accessToken } = await this.useCase.execute({
-        code: "<your_code>",
-        provider,
-      });
+      const { accessToken } = await this.useCase.execute({ code });
 
       response.cookie("access_token", accessToken, {
         httpOnly: true,
