@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>@call-me-dev/clean-architecture-example</h1>
+  <h1>clean-architecture-example</h1>
 
   <p>
     <a href="./README.md" target="_blank">
@@ -9,8 +9,6 @@
       <img alt="License: MIT" src="https://img.shields.io/badge/License-Call_Me_Dev-blue.svg" />
     </a>
   </p>
-
-  <p>Clean Architecture x TDD<p>
 </div>
 
 ## 📝 Table of content
@@ -19,9 +17,20 @@
 
 ## <a id="getting-started" name="getting-started">🚀 Getting Started</a>
 
+Run the api in development mode,
+
 ```shell
-# Install all the dependencies
-pnpm i
-# Run the application in development (watch mode)
 pnpm start:development
+```
+
+Run the unitary specs
+
+```shell
+pnpm test
+```
+
+Run the e2e specs
+
+```shell
+pnpm test:e2e
 ```
