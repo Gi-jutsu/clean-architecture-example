@@ -1,5 +1,6 @@
 import { ResourceNotFoundError } from "@core/errors/resource-not-found.error.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
+import jwt from "jsonwebtoken";
 import { describe } from "node:test";
 import { expect, it } from "vitest";
 import { WrongPasswordError } from "./errors/wrong-password.error.js";
@@ -7,7 +8,7 @@ import { SignInWithCredentialsUseCase } from "./use-case.js";
 
 describe("SignInWithCredentialsUseCase", () => {
   const repository = new InMemoryAccountRepository();
-  const useCase = new SignInWithCredentialsUseCase(repository);
+  const useCase = new SignInWithCredentialsUseCase(repository, jwt);
 
   it("should throw a ResourceNotFoundError when the user does not exist", async () => {
     // Given
@@ -21,7 +22,11 @@ describe("SignInWithCredentialsUseCase", () => {
 
     // Then
     await expect(promise).rejects.toThrow(
-      new ResourceNotFoundError("Account", "/data/attributes/email")
+      new ResourceNotFoundError({
+        resource: "Account",
+        searchedByFieldName: "email",
+        searchedByValue: "dylan@call-me-dev.com",
+      })
     );
   });
 
