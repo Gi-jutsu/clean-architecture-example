@@ -60,6 +60,8 @@ describe("SignInWithCredentialsHttpController", () => {
           password: "wrong-password",
         });
 
+      console.log(response);
+
       expect(response.status).toEqual(401);
       expect(response.body).toEqual({
         code: "wrong-password",
