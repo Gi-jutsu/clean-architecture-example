@@ -1,14 +1,17 @@
-import { defineConfig } from "vitest/config";
+import swc from "unplugin-swc";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  plugins: [tsconfigPaths(), swc.vite(), swc.rollup()],
   test: {
     coverage: {
+      enabled: true,
+      include: ["src/**/*.ts"],
       provider: "v8",
     },
+    fileParallelism: false,
     exclude: ["build", "node_modules"],
-    globalSetup: "specs/global-setup.ts",
     include: ["src/**/*.e2e.spec.ts"],
   },
 });

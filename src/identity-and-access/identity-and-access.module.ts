@@ -1,32 +1,35 @@
-import {
-  type JwtService,
-  JwtServiceToken,
-} from "@identity-and-access/infrastructure/services/jwt.service.js";
-import { ReadMeHttpController } from "@identity-and-access/use-cases/read-me/http.controller.js";
-import { ReadMeUseCase } from "@identity-and-access/use-cases/read-me/use-case.js";
-import { SignInWithGoogleHttpController } from "@identity-and-access/use-cases/sign-in-with-google/http.controller.js";
-import { SignInWithGoogleUseCase } from "@identity-and-access/use-cases/sign-in-with-google/use-case.js";
+import { JwtServiceToken } from "@identity-and-access/infrastructure/services/jwt.service.js";
 import { Module } from "@nestjs/common";
+import { AccountRepositoryToken } from "./domain/account/repository.js";
+import { InMemoryAccountRepository } from "./infrastructure/repositories/in-memory-account.repository.js";
+import { SignInWithCredentialsHttpController } from "./use-cases/sign-in-with-credentials/http.controller.js";
+import { SignInWithCredentialsUseCase } from "./use-cases/sign-in-with-credentials/use-case.js";
 
 @Module({
   controllers: [
-    /** HTTP Controllers */
-    ReadMeHttpController,
-    SignInWithGoogleHttpController,
+    /** Http controllers */
+    SignInWithCredentialsHttpController,
   ],
   providers: [
-    /** Infrastructure / Services */
+    /** Repositories */
+    {
+      provide: AccountRepositoryToken,
+      useClass: InMemoryAccountRepository,
+    },
+
+    /** Services */
     {
       provide: JwtServiceToken,
       useValue: (await import("jsonwebtoken")).default,
     },
 
-    /** Use Cases */
-    ReadMeUseCase,
+    /** Use cases */
     {
-      provide: SignInWithGoogleUseCase,
-      useFactory: (jwt: JwtService) => new SignInWithGoogleUseCase(jwt),
-      inject: [JwtServiceToken],
+      provide: SignInWithCredentialsUseCase,
+      useFactory: (
+        ...args: ConstructorParameters<typeof SignInWithCredentialsUseCase>
+      ) => new SignInWithCredentialsUseCase(...args),
+      inject: [AccountRepositoryToken, JwtServiceToken],
     },
   ],
 })

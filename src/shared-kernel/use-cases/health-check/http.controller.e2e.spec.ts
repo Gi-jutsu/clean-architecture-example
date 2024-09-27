@@ -1,11 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { Server } from "http";
+import supertest from "supertest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { bootstrap } from "../../../main.js";
 
-describe("GET /health-check", () => {
+describe("HealthCheckHttpController", () => {
+  let server: Server;
+
+  beforeAll(async () => {
+    server = await bootstrap();
+  });
+
+  afterAll(() => {
+    server.close();
+  });
+
   it("should return 200 when the api is healthy", async () => {
-    // Act
-    const response = await fetch("http://localhost:8080/health-check");
+    const response = await supertest(server).get("/health-check");
 
-    // Assert
-    expect(response.status).toBe(200);
+    expect(response.status).toEqual(200);
   });
 });

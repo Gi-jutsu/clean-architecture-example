@@ -5,6 +5,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "paths": {
+      "@core/*": ["./src/core/*"],
       "@identity-and-access/*": ["./src/identity-and-access/*"],
       "@shared-kernel/*": ["./src/shared-kernel/*"]
     },
