@@ -37,6 +37,12 @@ export class InMemoryAccountRepository implements AccountRepository {
     return null;
   }
 
+  async isEmailTaken(email: string): Promise<boolean> {
+    return Array.from(this.snapshots.values()).some(
+      (properties) => properties.email === email
+    );
+  }
+
   async save(account: Account): Promise<void> {
     this.snapshots.set(account.id, account.properties);
   }
