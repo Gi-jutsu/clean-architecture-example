@@ -14,7 +14,7 @@ import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 @Injectable()
-export class Rfc9457ErrorInterceptor implements NestInterceptor {
+export class MapErrorToRfc9457HttpException implements NestInterceptor {
   intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next
       .handle()
