@@ -10,8 +10,9 @@ export default defineConfig({
       include: ["src/**/*.ts"],
       provider: "v8",
     },
-    fileParallelism: false,
     exclude: ["build", "node_modules"],
+    fileParallelism: false,
+    globalSetup: "specs/e2e.setup.ts",
     include: ["src/**/*.e2e.spec.ts"],
   },
 });
