@@ -7,7 +7,7 @@ import { DrizzleModule } from "./drizzle/drizzle.module.js";
     DrizzleModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        connectionString: config.get("DATABASE_CONNECTION_STRING"),
+        connectionString: config.get("DATABASE_URL"),
       }),
     }),
   ],

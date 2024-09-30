@@ -5,8 +5,11 @@ services:
       context: ../
       dockerfile: ./docker/Dockerfile
     image: backend
-    env_file:
-      - ../.env
+    environment:
+      API_HTTP_HOST: "0.0.0.0"
+      API_HTTP_PORT: "8080"
+      API_HTTP_SCHEME: "http"
+      DATABASE_URL: "postgres://admin:admin@database:5432/database"
     ports:
       - "8080:8080"
 
