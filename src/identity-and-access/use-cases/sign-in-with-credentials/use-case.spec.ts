@@ -1,9 +1,7 @@
-import { ResourceNotFoundError } from "@core/errors/resource-not-found.error.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
 import jwt from "jsonwebtoken";
 import { describe } from "node:test";
 import { expect, it } from "vitest";
-import { WrongPasswordError } from "./errors/wrong-password.error.js";
 import { SignInWithCredentialsUseCase } from "./use-case.js";
 
 describe("SignInWithCredentialsUseCase", () => {
@@ -21,13 +19,14 @@ describe("SignInWithCredentialsUseCase", () => {
     });
 
     // Then
-    await expect(promise).rejects.toThrow(
-      new ResourceNotFoundError({
-        resource: "Account",
-        searchedByFieldName: "email",
-        searchedByValue: "dylan@call-me-dev.com",
-      })
-    );
+    await expect(promise).rejects.toMatchObject({
+      status: 404,
+      code: "resource-not-found",
+      title: "Resource Not Found",
+      detail: "The Account you are trying to access does not exist.",
+      timestamp: expect.any(Date),
+      pointer: "/data/attributes/email",
+    });
   });
 
   it("should throw a WrongPasswordError when the password is incorrect", async () => {
@@ -46,6 +45,13 @@ describe("SignInWithCredentialsUseCase", () => {
     });
 
     // Then
-    await expect(promise).rejects.toThrow(new WrongPasswordError());
+    await expect(promise).rejects.toMatchObject({
+      status: 401,
+      code: "wrong-password",
+      title: "Unauthorized",
+      detail: "The password you entered is incorrect. Please try again.",
+      timestamp: expect.any(Date),
+      pointer: "/data/attributes/password",
+    });
   });
 });

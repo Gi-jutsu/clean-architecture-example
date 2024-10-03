@@ -17,20 +17,28 @@ describe("SignUpWithCredentialsUseCase", () => {
 
     repository.snapshots.set("1", snapshot);
 
-    // When
-    const promise = useCase.execute({
-      email: "dylan@call-me-dev.com",
-      password: "wrong-password",
-    });
+    try {
+      // When
+      await useCase.execute({
+        email: "dylan@call-me-dev.com",
+        password: "wrong-password",
+      });
 
-    // Then
-    await expect(promise).rejects.toThrow(
-      new ResourceAlreadyExistsError({
+      expect(true).toBe(false);
+    } catch (error: unknown) {
+      expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
+      expect(error).toMatchObject({
+        status: 409,
+        code: "resource-already-exists",
+        title: "Resource Already Exists",
+        detail: "The Account you are trying to create already exists.",
+        timestamp: expect.any(Date),
+        pointer: "/data/attributes/email",
         conflictingFieldName: "email",
         conflictingFieldValue: "dylan@call-me-dev.com",
         resource: "Account",
-      })
-    );
+      });
+    }
   });
 
   it("should create an account", async () => {

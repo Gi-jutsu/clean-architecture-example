@@ -48,6 +48,7 @@ describe("SignInWithCredentialsHttpController", () => {
         searchedByFieldName: "email",
         searchedByValue: "unknown@call-me-dev.com",
         status: 404,
+        timestamp: expect.any(String),
         title: "Resource Not Found",
       });
     });

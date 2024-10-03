@@ -1,16 +1,20 @@
 export class WrongPasswordError extends Error {
-  status: number;
+  /** (RFC9457) Members of a Problem Details Object */
   code: string;
-  title: string;
   detail: string;
+  status: number;
+  title: string;
   timestamp: Date;
+  pointer?: string;
 
   constructor() {
-    super("The password provided is incorrect.");
-    this.status = 401;
+    super("The password you entered is incorrect. Please try again.");
+
     this.code = "wrong-password";
+    this.detail = this.message;
+    this.status = 401;
     this.title = "Unauthorized";
-    this.detail = "The password you entered is incorrect. Please try again.";
     this.timestamp = new Date();
+    this.pointer = `/data/attributes/password`;
   }
 }

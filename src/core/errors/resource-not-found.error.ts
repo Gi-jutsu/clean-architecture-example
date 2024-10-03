@@ -9,6 +9,7 @@ export class ResourceNotFoundError extends Error {
   detail: string;
   status: number;
   title: string;
+  timestamp: Date;
   pointer?: string;
 
   /** (RFC9457) Extension Members */
@@ -23,6 +24,7 @@ export class ResourceNotFoundError extends Error {
     this.detail = this.message;
     this.status = 404;
     this.title = "Resource Not Found";
+    this.timestamp = new Date();
     this.pointer = `/data/attributes/${input.searchedByFieldName}`;
 
     this.resource = input.resource;

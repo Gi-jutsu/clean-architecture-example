@@ -48,6 +48,7 @@ describe("SignInWithCredentialsHttpController", () => {
         conflictingFieldName: "email",
         conflictingFieldValue: "dylan@call-me-dev.com",
         status: 409,
+        timestamp: expect.any(String),
         title: "Resource Already Exists",
       });
     });
