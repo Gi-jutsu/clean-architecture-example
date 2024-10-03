@@ -7,6 +7,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  Logger,
   NestInterceptor,
   NotFoundException,
 } from "@nestjs/common";
@@ -15,6 +16,8 @@ import { catchError } from "rxjs/operators";
 
 @Injectable()
 export class MapErrorToRfc9457HttpException implements NestInterceptor {
+  private readonly logger = new Logger(MapErrorToRfc9457HttpException.name);
+
   intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
     return next
       .handle()
@@ -22,6 +25,8 @@ export class MapErrorToRfc9457HttpException implements NestInterceptor {
   }
 
   private throwAsHttpException(error: unknown): Observable<never> {
+    this.logger.error(error);
+
     if (error instanceof ResourceNotFoundError) {
       return throwError(() => new NotFoundException(error, { cause: error }));
     }
