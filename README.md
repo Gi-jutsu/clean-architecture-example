@@ -20,7 +20,7 @@
 Run the api in development mode,
 
 ```shell
-pnpm start:development
+pnpm dev
 ```
 
 Run the unitary specs
