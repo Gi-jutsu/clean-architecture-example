@@ -22,6 +22,13 @@ export abstract class AggregateRoot<
     this._properties = properties;
   }
 
+  static hydrate<Constructor extends new (...args: any) => any>(
+    this: Constructor,
+    ...args: any
+  ): InstanceType<Constructor> {
+    return new this(...args);
+  }
+
   get properties() {
     return Object.freeze({
       id: this.id,
