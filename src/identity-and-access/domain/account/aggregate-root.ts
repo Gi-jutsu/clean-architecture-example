@@ -1,12 +1,12 @@
 import { AggregateRoot } from "@core/primitives/aggregate-root.base.js";
 
-interface AccountProperties {
+interface Properties {
   email: string;
   password: string;
 }
 
-export class Account extends AggregateRoot<AccountProperties> {
-  static create(properties: AccountProperties) {
+export class Account extends AggregateRoot<Properties> {
+  static create(properties: Properties) {
     return new Account({ properties });
   }
 }
