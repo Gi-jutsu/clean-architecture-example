@@ -19,7 +19,9 @@ describe("ForgotPasswordUseCase", () => {
     const email = "non-registered@call-me-dev.com";
 
     // When
-    const promise = useCase.execute({ email });
+    const promise = useCase.execute({
+      email,
+    });
 
     // Then
     await expect(promise).rejects.toMatchObject({
@@ -37,9 +39,8 @@ describe("ForgotPasswordUseCase", () => {
 
   it("should initiate the password reset process for an existing account", async () => {
     // Given
-    const email = "registered@call-me-dev.com";
     const account = {
-      email,
+      email: "registered@call-me-dev.com",
       id: "1",
       password: "password",
     };
@@ -47,7 +48,9 @@ describe("ForgotPasswordUseCase", () => {
     accounts.snapshots.set(account.id, account);
 
     // When
-    await useCase.execute({ email });
+    await useCase.execute({
+      email: account.email,
+    });
 
     // Then
     expect([...passwordResetRequests.snapshots.values()]).toEqual([
