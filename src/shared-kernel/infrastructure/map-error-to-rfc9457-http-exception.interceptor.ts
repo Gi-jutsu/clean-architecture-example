@@ -11,6 +11,7 @@ import {
   NestInterceptor,
   NotFoundException,
 } from "@nestjs/common";
+import { DateTime } from "luxon";
 import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
@@ -42,7 +43,7 @@ export class MapErrorToRfc9457HttpException implements NestInterceptor {
             code: (error as any).code ?? "internal-server-error",
             detail: (error as any).detail ?? "An unexpected error occurred.",
             status: (error as any).status ?? HttpStatus.INTERNAL_SERVER_ERROR,
-            timestamp: (error as any).timestamp ?? new Date().toISOString(),
+            timestamp: (error as any).timestamp ?? DateTime.now().toISO(),
             title: (error as any).title ?? "Internal Server Error",
           },
           (error as any).status ?? HttpStatus.INTERNAL_SERVER_ERROR

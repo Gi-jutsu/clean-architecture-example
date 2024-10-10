@@ -1,7 +1,7 @@
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
 import { InMemoryPasswordResetRequestRepository } from "@identity-and-access/infrastructure/repositories/in-memory-password-reset-request.repository.js";
-import { beforeEach } from "node:test";
-import { describe, expect, it } from "vitest";
+import { DateTime, Settings } from "luxon";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { ForgotPasswordUseCase } from "./use-case.js";
 
 describe("ForgotPasswordUseCase", () => {
@@ -9,7 +9,15 @@ describe("ForgotPasswordUseCase", () => {
   const passwordResetRequests = new InMemoryPasswordResetRequestRepository();
   const useCase = new ForgotPasswordUseCase(accounts, passwordResetRequests);
 
-  beforeEach(() => {
+  beforeAll(() => {
+    Settings.now = () => new Date(0).getMilliseconds();
+  });
+
+  afterAll(() => {
+    Settings.now = () => Date.now();
+  });
+
+  afterEach(() => {
     accounts.snapshots.clear();
     passwordResetRequests.snapshots.clear();
   });
@@ -29,7 +37,7 @@ describe("ForgotPasswordUseCase", () => {
       code: "resource-not-found",
       title: "Resource Not Found",
       detail: "The Account you are trying to access does not exist.",
-      timestamp: expect.any(Date),
+      timestamp: DateTime.now(),
       pointer: "/data/attributes/email",
       resource: "Account",
       searchedByFieldName: "email",
@@ -58,7 +66,7 @@ describe("ForgotPasswordUseCase", () => {
         id: expect.any(String),
         accountId: account.id,
         // @TODO: Implement DateProvider interface in order to ease testing
-        expiresAt: expect.any(Date),
+        expiresAt: DateTime.now().plus({ days: 1 }),
         token: expect.any(String),
       },
     ]);

@@ -1,21 +1,34 @@
 import { ResourceAlreadyExistsError } from "@core/errors/resource-already-exists.error.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
-import { describe } from "node:test";
-import { expect, it } from "vitest";
+import { DateTime, Settings } from "luxon";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { SignUpWithCredentialsUseCase } from "./use-case.js";
 
 describe("SignUpWithCredentialsUseCase", () => {
   const repository = new InMemoryAccountRepository();
   const useCase = new SignUpWithCredentialsUseCase(repository);
 
+  beforeAll(() => {
+    Settings.now = () => new Date(0).getMilliseconds();
+  });
+
+  afterAll(() => {
+    Settings.now = () => Date.now();
+  });
+
+  afterEach(() => {
+    repository.snapshots.clear();
+  });
+
   it("should throw a ResourceAlreadyExists when the email is already taken", async () => {
     // Given
-    const snapshot = {
+    const account = {
       email: "dylan@call-me-dev.com",
+      id: "1",
       password: "password",
     };
 
-    repository.snapshots.set("1", snapshot);
+    repository.snapshots.set(account.id, account);
 
     try {
       // When
@@ -32,7 +45,7 @@ describe("SignUpWithCredentialsUseCase", () => {
         code: "resource-already-exists",
         title: "Resource Already Exists",
         detail: "The Account you are trying to create already exists.",
-        timestamp: expect.any(Date),
+        timestamp: DateTime.now(),
         pointer: "/data/attributes/email",
         conflictingFieldName: "email",
         conflictingFieldValue: "dylan@call-me-dev.com",
@@ -43,20 +56,21 @@ describe("SignUpWithCredentialsUseCase", () => {
 
   it("should create an account", async () => {
     // Given
-    repository.snapshots.clear();
-
-    // When
-    const { account } = await useCase.execute({
+    const credentials = {
       email: "dylan@call-me-dev.com",
       password: "password",
-    });
+    };
+
+    console.log("ICI )", repository.snapshots);
+    // When
+    const { account } = await useCase.execute(credentials);
 
     // Then
     expect([...repository.snapshots.values()]).toEqual([
       {
         id: account.id,
-        email: "dylan@call-me-dev.com",
-        password: "password",
+        email: credentials.email,
+        password: credentials.password,
       },
     ]);
   });

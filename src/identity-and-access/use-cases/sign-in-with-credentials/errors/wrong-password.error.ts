@@ -1,10 +1,12 @@
+import { DateTime } from "luxon";
+
 export class WrongPasswordError extends Error {
   /** (RFC9457) Members of a Problem Details Object */
   code: string;
   detail: string;
   status: number;
   title: string;
-  timestamp: Date;
+  timestamp: DateTime;
   pointer?: string;
 
   constructor() {
@@ -14,7 +16,7 @@ export class WrongPasswordError extends Error {
     this.detail = this.message;
     this.status = 401;
     this.title = "Unauthorized";
-    this.timestamp = new Date();
+    this.timestamp = DateTime.now();
     this.pointer = `/data/attributes/password`;
   }
 }

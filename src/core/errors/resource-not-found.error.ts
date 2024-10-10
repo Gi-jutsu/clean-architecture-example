@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 type ExtensionMembers = Pick<
   ResourceNotFoundError,
   "resource" | "searchedByFieldName" | "searchedByValue"
@@ -9,7 +11,7 @@ export class ResourceNotFoundError extends Error {
   detail: string;
   status: number;
   title: string;
-  timestamp: Date;
+  timestamp: DateTime;
   pointer?: string;
 
   /** (RFC9457) Extension Members */
@@ -24,7 +26,7 @@ export class ResourceNotFoundError extends Error {
     this.detail = this.message;
     this.status = 404;
     this.title = "Resource Not Found";
-    this.timestamp = new Date();
+    this.timestamp = DateTime.now();
     this.pointer = `/data/attributes/${input.searchedByFieldName}`;
 
     this.resource = input.resource;

@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 type ExtensionMembers = Pick<
   ResourceAlreadyExistsError,
   "resource" | "conflictingFieldName" | "conflictingFieldValue"
@@ -9,7 +11,7 @@ export class ResourceAlreadyExistsError extends Error {
   detail: string;
   status: number;
   title: string;
-  timestamp: Date;
+  timestamp: DateTime;
   pointer?: string;
 
   /** (RFC9457) Extension Members */
@@ -24,7 +26,7 @@ export class ResourceAlreadyExistsError extends Error {
     this.detail = this.message;
     this.status = 409;
     this.title = "Resource Already Exists";
-    this.timestamp = new Date();
+    this.timestamp = DateTime.now();
     this.pointer = `/data/attributes/${input.conflictingFieldName}`;
 
     this.resource = input.resource;
