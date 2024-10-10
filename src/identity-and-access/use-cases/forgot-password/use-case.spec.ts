@@ -65,7 +65,6 @@ describe("ForgotPasswordUseCase", () => {
       {
         id: expect.any(String),
         accountId: account.id,
-        // @TODO: Implement DateProvider interface in order to ease testing
         expiresAt: DateTime.now().plus({ days: 1 }),
         token: expect.any(String),
       },
