@@ -3,7 +3,7 @@ import { Module } from "@nestjs/common";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
 import { PasswordResetRequestRepositoryToken } from "./domain/password-reset-request/repository.js";
 import { DrizzleAccountRepository } from "./infrastructure/repositories/drizzle-account.repository.js";
-import { InMemoryPasswordResetRequestRepository } from "./infrastructure/repositories/in-memory-password-reset-request.repository.js";
+import { DrizzlePasswordResetRequestRepository } from "./infrastructure/repositories/drizzle-password-reset-request.repository.js";
 import { ForgotPasswordHttpController } from "./use-cases/forgot-password/http.controller.js";
 import { ForgotPasswordUseCase } from "./use-cases/forgot-password/use-case.js";
 import { SignInWithCredentialsHttpController } from "./use-cases/sign-in-with-credentials/http.controller.js";
@@ -25,7 +25,7 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
     },
     {
       provide: PasswordResetRequestRepositoryToken,
-      useClass: InMemoryPasswordResetRequestRepository,
+      useClass: DrizzlePasswordResetRequestRepository,
     },
 
     /** Services */
