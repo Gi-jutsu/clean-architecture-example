@@ -14,14 +14,12 @@ describe("SignInWithCredentialsHttpController", () => {
     server.close();
   });
 
-  describe("POST /authentication/sign-in", () => {
+  describe("POST /auth/sign-in", () => {
     it("should return 200 and set the access token in a secure, HTTP-only, SameSite=Strict cookie when the credentials are valid", async () => {
-      const response = await supertest(server)
-        .post("/authentication/sign-in")
-        .send({
-          email: "dylan@call-me-dev.com",
-          password: "password",
-        });
+      const response = await supertest(server).post("/auth/sign-in").send({
+        email: "dylan@call-me-dev.com",
+        password: "password",
+      });
 
       expect(response.status).toEqual(200);
       expect(response.headers["set-cookie"][0]).toMatch(
@@ -32,12 +30,10 @@ describe("SignInWithCredentialsHttpController", () => {
     });
 
     it("should return 404 when the account does not exist", async () => {
-      const response = await supertest(server)
-        .post("/authentication/sign-in")
-        .send({
-          email: "unknown@call-me-dev.com",
-          password: "password",
-        });
+      const response = await supertest(server).post("/auth/sign-in").send({
+        email: "unknown@call-me-dev.com",
+        password: "password",
+      });
 
       expect(response.status).toEqual(404);
       expect(response.body).toEqual({
@@ -54,12 +50,10 @@ describe("SignInWithCredentialsHttpController", () => {
     });
 
     it("should return 401 when the password is invalid", async () => {
-      const response = await supertest(server)
-        .post("/authentication/sign-in")
-        .send({
-          email: "dylan@call-me-dev.com",
-          password: "wrong-password",
-        });
+      const response = await supertest(server).post("/auth/sign-in").send({
+        email: "dylan@call-me-dev.com",
+        password: "wrong-password",
+      });
 
       expect(response.status).toEqual(401);
       expect(response.body).toEqual({

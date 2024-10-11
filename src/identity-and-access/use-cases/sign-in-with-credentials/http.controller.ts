@@ -14,7 +14,7 @@ import { SignInWithCredentialsUseCase } from "./use-case.js";
 export class SignInWithCredentialsHttpController {
   constructor(private readonly useCase: SignInWithCredentialsUseCase) {}
 
-  @Post("/authentication/sign-in")
+  @Post("/auth/sign-in")
   @HttpCode(HttpStatus.OK)
   async handle(
     @Body() body: SignInWithCredentialsHttpRequestBody,

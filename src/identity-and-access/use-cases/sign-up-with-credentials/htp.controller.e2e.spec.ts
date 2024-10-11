@@ -14,14 +14,12 @@ describe("SignInWithCredentialsHttpController", () => {
     server.close();
   });
 
-  describe("POST /authentication/sign-up", () => {
+  describe("POST /auth/sign-up", () => {
     it("should return 201 when the account is created", async () => {
-      const response = await supertest(server)
-        .post("/authentication/sign-up")
-        .send({
-          email: "new-account@call-me-dev.com",
-          password: "password",
-        });
+      const response = await supertest(server).post("/auth/sign-up").send({
+        email: "new-account@call-me-dev.com",
+        password: "password",
+      });
 
       expect(response.status).toEqual(201);
       expect(response.body).toEqual({
@@ -32,12 +30,10 @@ describe("SignInWithCredentialsHttpController", () => {
     });
 
     it("should return 409 when the email is already taken", async () => {
-      const response = await supertest(server)
-        .post("/authentication/sign-up")
-        .send({
-          email: "dylan@call-me-dev.com",
-          password: "password",
-        });
+      const response = await supertest(server).post("/auth/sign-up").send({
+        email: "dylan@call-me-dev.com",
+        password: "password",
+      });
 
       expect(response.status).toEqual(409);
       expect(response.body).toEqual({

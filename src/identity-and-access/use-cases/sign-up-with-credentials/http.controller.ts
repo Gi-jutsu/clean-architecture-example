@@ -6,7 +6,7 @@ import { SignUpWithCredentialsUseCase } from "./use-case.js";
 export class SignUpWithCredentialsHttpController {
   constructor(private readonly useCase: SignUpWithCredentialsUseCase) {}
 
-  @Post("/authentication/sign-up")
+  @Post("/auth/sign-up")
   @HttpCode(HttpStatus.CREATED)
   async handle(@Body() body: SignUpWithCredentialsHttpRequestBody) {
     return await this.useCase.execute({
