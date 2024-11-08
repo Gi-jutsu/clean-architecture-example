@@ -1,36 +1,83 @@
 <div align="center">
-  <h1>clean-architecture-example</h1>
+  <h1>NestJS - Clean Architecture Boilerplate</h1>
 
   <p>
     <a href="./README.md" target="_blank">
-      <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-green.svg">
+      <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg">
     </a>
     <a href="./LICENSE" target="_blank">
-      <img alt="License: MIT" src="https://img.shields.io/badge/License-Call_Me_Dev-blue.svg" />
+      <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg" />
     </a>
   </p>
 </div>
 
 ## 📝 Table of content
 
-- 🚀 [Getting Started](#getting-started)
+- 🚀 [Quick Start](#quick-start)
+- 🌟 [Key Features](#key-features)
+- 📂 [Project Structure](#project-structure)
 
-## <a id="getting-started" name="getting-started">🚀 Getting Started</a>
+## <a id="quick-start" name="quick-start">🚀 Quick Start</a>
 
-Run the api in development mode,
+<details>
+<summary>Bootstrap the PostgreSQL database</summary>
+
+1. Start PostgreSQL using [docker-compose.yaml](/docker/docker-compose.yaml)
 
 ```shell
+docker compose -f docker/docker-compose.yaml database
+```
+
+2. Run the SQL migrations
+
+```shell
+pnpm drizzle-kit migrate
+```
+
+</details>
+
+<details>
+
+<summary>Start the API on Your Local Machine</summary>
+
+> [!IMPORTANT]
+> This API requires a postgresql database. <br />
+> See Database Setup for details.
+
+```shell
+# Run the backend in watch mode
 pnpm dev
 ```
 
-Run the unitary specs
+</details>
 
-```shell
-pnpm test
-```
+## <a id="key-features" name="key-features"> 🌟 Key Features </a>
 
-Run the e2e specs
+### 🐳 Docker-Ready
 
-```shell
-pnpm test:e2e
+- <b>Optimized for Deployments</b>: Multi-stage build keeps the production image lean, reducing network footprint and speeding up deployments.
+
+- <b>Run Locally:</b> Launch the entire stack (API + Database) with Docker Compose.
+
+## <a id="project-structure" name="project-structure"> 📂 Project Structure </a>
+
+```perl
+📁 src/
+├── 📁 core/
+│ ├── 📁 errors/ # Generic error classes
+│ └── 📁 primitives/ # Core building blocks such as AggregateRoot, ...
+│
+├── 📁 identity-and-access/
+│ ├── 📁 domain/ # Business logic around identity (e.g. Account, ...)
+│ ├── 📁 infrastructure/ # Adapters implementing interfaces for external systems (e.g. database, JWT, email services, ...)
+│ ├── 📁 use-cases/
+│ └── 📄 identity-and-access.module.ts
+│
+├── 📁 shared-kernel/
+│ ├── 📁 infrastructure/ # Adapters used across multiple bounded-contexts (e.g. GoogleCloudTasks, ...)
+│ ├── 📁 use-cases/
+│ └── 📄 shared-kernel.module.ts
+│
+├── 📄 application.module.ts
+└── 📄 main.ts
 ```
