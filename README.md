@@ -13,22 +13,26 @@
 
 ## 📝 Table of content
 
-- 🚀 [Quick Start](#quick-start)
-- 🌟 [Key Features](#key-features)
-- 📂 [Project Structure](#project-structure)
+- 👋 [Introduction](#👋-introduction)
+- 🚀 [Quick Start](#🚀-quick-start)
+- 🌟 [Key Features](#🌟-key-features)
+- 📂 [Project Structure](#📂-project-structure)
 
-## <a id="quick-start" name="quick-start">🚀 Quick Start</a>
+## 👋 Introduction
+
+Welcome to the NestJS Boilerplate. This project provides a solid foundation for building scalable and maintainable backend applications with NestJS, following the [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html). It also integrates concepts from [Domain-Driven Design (DDD)](https://martinfowler.com/bliki/DomainDrivenDesign.html) to help organize your code around the core business logic.
+
+## 🚀 Quick Start
 
 > [!IMPORTANT]
-> This API requires a postgresql database. <br />
+> To run the backend locally, you need a PostgreSQL database with migrations applied.
 
-<details>
-<summary>Bootstrap the PostgreSQL database</summary>
+### Bootstrap the PostgreSQL database
 
 1. Start PostgreSQL using [docker-compose.yaml](/docker/docker-compose.yaml)
 
 ```shell
-docker compose -f docker/docker-compose.yaml database
+docker compose -f docker/docker-compose.yaml up database -d
 ```
 
 2. Run the SQL migrations
@@ -37,20 +41,14 @@ docker compose -f docker/docker-compose.yaml database
 pnpm drizzle-kit migrate
 ```
 
-</details>
-
-<details>
-
-<summary>Start the API on Your Local Machine</summary>
+### Start the API on Your Local Machine
 
 ```shell
 # Run the backend in watch mode
 pnpm dev
 ```
 
-</details>
-
-## <a id="key-features" name="key-features"> 🌟 Key Features </a>
+## 🌟 Key Features
 
 ### 🐳 Docker-Ready
 
@@ -58,7 +56,7 @@ pnpm dev
 
 - <b>Run Locally:</b> Launch the entire stack (API + Database) with [docker-compose.yaml](/docker/docker-compose.yaml)
 
-## <a id="project-structure" name="project-structure"> 📂 Project Structure </a>
+## 📂 Project Structure
 
 ```perl
 📁 src/
