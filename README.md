@@ -19,6 +19,9 @@
 
 ## <a id="quick-start" name="quick-start">🚀 Quick Start</a>
 
+> [!IMPORTANT]
+> This API requires a postgresql database. <br />
+
 <details>
 <summary>Bootstrap the PostgreSQL database</summary>
 
@@ -40,10 +43,6 @@ pnpm drizzle-kit migrate
 
 <summary>Start the API on Your Local Machine</summary>
 
-> [!IMPORTANT]
-> This API requires a postgresql database. <br />
-> See Database Setup for details.
-
 ```shell
 # Run the backend in watch mode
 pnpm dev
@@ -57,7 +56,7 @@ pnpm dev
 
 - <b>Optimized for Deployments</b>: Multi-stage build keeps the production image lean, reducing network footprint and speeding up deployments.
 
-- <b>Run Locally:</b> Launch the entire stack (API + Database) with Docker Compose.
+- <b>Run Locally:</b> Launch the entire stack (API + Database) with [docker-compose.yaml](/docker/docker-compose.yaml)
 
 ## <a id="project-structure" name="project-structure"> 📂 Project Structure </a>
 
