@@ -1,19 +1,18 @@
 import type { PasswordResetRequest } from "@identity-and-access/domain/password-reset-request/aggregate-root.js";
 import type { PasswordResetRequestRepository } from "@identity-and-access/domain/password-reset-request/repository.js";
 import {
+  IdentityAndAccessDatabaseTransactionAdapter,
   passwordResetRequestSchema,
-  type IdentityAndAccessDatabaseSchema,
 } from "@identity-and-access/infrastructure/database/drizzle/schema.js";
-import { Inject, Injectable } from "@nestjs/common";
-import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/database/drizzle/constants.js";
+import { TransactionHost } from "@nestjs-cls/transactional";
+import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class DrizzlePasswordResetRequestRepository
   implements PasswordResetRequestRepository
 {
   constructor(
-    @Inject(DrizzlePostgresPoolToken)
-    private readonly database: IdentityAndAccessDatabaseSchema
+    private readonly txHost: TransactionHost<IdentityAndAccessDatabaseTransactionAdapter>
   ) {}
 
   async save(request: PasswordResetRequest): Promise<void> {
@@ -22,7 +21,7 @@ export class DrizzlePasswordResetRequestRepository
       expiresAt: request.properties.expiresAt.toJSDate(),
     };
 
-    await this.database
+    await this.txHost.tx
       .insert(passwordResetRequestSchema)
       .values(values)
       .onConflictDoUpdate({

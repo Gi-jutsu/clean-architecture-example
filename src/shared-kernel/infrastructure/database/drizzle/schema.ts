@@ -1,3 +1,4 @@
+import type { TransactionalAdapterDrizzleOrm } from "@nestjs-cls/transactional-adapter-drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { randomUUID } from "node:crypto";
@@ -19,6 +20,9 @@ export const OutboxEventSchema = pgTable("outbox_events", {
     .$defaultFn(() => new Date()),
 });
 
-export type SharedKernelDatabaseSchema = NodePgDatabase<{
+export type SharedKernelDatabase = NodePgDatabase<{
   outboxEvents: typeof OutboxEventSchema;
 }>;
+
+export type SharedKernelDatabaseTransactionAdapter =
+  TransactionalAdapterDrizzleOrm<SharedKernelDatabase>;

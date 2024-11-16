@@ -1,6 +1,7 @@
 import { ResourceAlreadyExistsError } from "@core/errors/resource-already-exists.error.js";
 import { ResourceNotFoundError } from "@core/errors/resource-not-found.error.js";
 import {
+  BadRequestException,
   CallHandler,
   ConflictException,
   ExecutionContext,
@@ -27,6 +28,12 @@ export class MapErrorToRfc9457HttpException implements NestInterceptor {
 
   private throwAsHttpException(error: unknown): Observable<never> {
     this.logger.error(error);
+
+    // @TODO: Map ValidationErrors to RFC9457
+    // for now, we are just returning the error as is
+    if (error instanceof BadRequestException) {
+      return throwError(() => error);
+    }
 
     if (error instanceof ResourceNotFoundError) {
       return throwError(() => new NotFoundException(error, { cause: error }));
