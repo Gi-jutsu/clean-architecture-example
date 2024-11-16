@@ -1,12 +1,12 @@
 import { Inject, Module } from "@nestjs/common";
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import { DrizzlePostgresPoolToken } from "./drizzle.constants.js";
+import { DrizzlePostgresPoolToken } from "./constants.js";
 import {
   ConfigurableModuleClass,
   type DrizzleModuleOptions,
   MODULE_OPTIONS_TOKEN,
-} from "./drizzle.module-definition.js";
+} from "./module-definition.js";
 
 @Module({
   providers: [

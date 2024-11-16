@@ -5,7 +5,7 @@ import {
   type IdentityAndAccessDatabaseSchema,
 } from "@identity-and-access/infrastructure/database/drizzle/schema.js";
 import { Inject, Injectable } from "@nestjs/common";
-import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/database/drizzle/drizzle.constants.js";
+import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/database/drizzle/constants.js";
 import { count, eq } from "drizzle-orm";
 
 @Injectable()
