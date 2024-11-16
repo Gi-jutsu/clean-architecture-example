@@ -61,7 +61,6 @@ describe("SignUpWithCredentialsUseCase", () => {
       password: "password",
     };
 
-    console.log("ICI )", repository.snapshots);
     // When
     const { account } = await useCase.execute(credentials);
 
