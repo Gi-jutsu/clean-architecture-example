@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { DomainEvent } from "./domain-event.base.js";
 
 interface AggregateRootProperties {
   id: string;
@@ -16,6 +17,8 @@ export abstract class AggregateRoot<
 > {
   public readonly id: AggregateRootProperties["id"];
   private readonly _properties: Properties;
+  // @TODO: Benchmark the performance on high-scale events (consider using a queue)
+  private readonly _domainEvents: DomainEvent[] = [];
 
   constructor({ id, properties }: CreateAggregateRootProperties<Properties>) {
     this.id = id ?? randomUUID();
@@ -29,10 +32,24 @@ export abstract class AggregateRoot<
     return new this(...args);
   }
 
+  protected commit(event: DomainEvent) {
+    this._domainEvents.push(event);
+  }
+
+  private clearDomainEvents() {
+    this._domainEvents.length = 0;
+  }
+
   get properties() {
     return Object.freeze({
       id: this.id,
       ...this._properties,
     });
+  }
+
+  pullDomainEvents() {
+    const domainEvents = [...this._domainEvents];
+    this.clearDomainEvents();
+    return domainEvents;
   }
 }
