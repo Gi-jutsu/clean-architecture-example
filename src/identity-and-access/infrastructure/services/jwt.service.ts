@@ -1,5 +1,5 @@
 export interface JwtService {
-  sign(payload: Record<string, any>, secret: string): string;
+  sign(payload: Record<string, unknown>, secret: string): string;
 }
 
-export const JwtServiceToken = Symbol.for("JwtService");
+export const JwtServiceToken = Symbol("JwtService");

@@ -2,20 +2,21 @@ import { Account } from "@identity-and-access/domain/account/aggregate-root.js";
 import type { AccountRepository } from "@identity-and-access/domain/account/repository.js";
 import {
   accountSchema,
-  type IdentityAndAccessDatabaseTransactionAdapter,
+  type IdentityAndAccessDatabase,
 } from "@identity-and-access/infrastructure/database/drizzle/schema.js";
-import { TransactionHost } from "@nestjs-cls/transactional";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
+import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/database/drizzle/constants.js";
 import { count, eq } from "drizzle-orm";
 
 @Injectable()
 export class DrizzleAccountRepository implements AccountRepository {
   constructor(
-    private readonly txHost: TransactionHost<IdentityAndAccessDatabaseTransactionAdapter>
+    @Inject(DrizzlePostgresPoolToken)
+    private readonly database: IdentityAndAccessDatabase
   ) {}
 
   async findByEmail(email: string) {
-    const [account] = await this.txHost.tx
+    const [account] = await this.database
       .select()
       .from(accountSchema)
       .where(eq(accountSchema.email, email))
@@ -30,7 +31,7 @@ export class DrizzleAccountRepository implements AccountRepository {
   }
 
   async isEmailTaken(email: string): Promise<boolean> {
-    const [record] = await this.txHost.tx
+    const [record] = await this.database
       .select({
         count: count(),
       })
@@ -42,7 +43,7 @@ export class DrizzleAccountRepository implements AccountRepository {
   }
 
   async save(account: Account): Promise<void> {
-    await this.txHost.tx
+    await this.database
       .insert(accountSchema)
       .values(account.properties)
       .onConflictDoUpdate({

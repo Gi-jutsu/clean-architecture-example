@@ -1,13 +1,19 @@
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
 import { InMemoryPasswordResetRequestRepository } from "@identity-and-access/infrastructure/repositories/in-memory-password-reset-request.repository.js";
+import { InMemoryOutboxMessageRepository } from "@shared-kernel/infrastructure/repositories/in-memory-outbox-message.repository.js";
 import { DateTime, Settings } from "luxon";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { ForgotPasswordUseCase } from "./use-case.js";
 
 describe("ForgotPasswordUseCase", () => {
   const accounts = new InMemoryAccountRepository();
   const passwordResetRequests = new InMemoryPasswordResetRequestRepository();
-  const useCase = new ForgotPasswordUseCase(accounts, passwordResetRequests);
+  const outboxMessages = new InMemoryOutboxMessageRepository();
+  const useCase = new ForgotPasswordUseCase(
+    accounts,
+    passwordResetRequests,
+    outboxMessages
+  );
 
   beforeAll(() => {
     Settings.now = () => new Date(0).getMilliseconds();
@@ -17,9 +23,10 @@ describe("ForgotPasswordUseCase", () => {
     Settings.now = () => Date.now();
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     accounts.snapshots.clear();
     passwordResetRequests.snapshots.clear();
+    outboxMessages.snapshots.clear();
   });
 
   it("should throw an error when attempting to reset password for an unregistered email address", async () => {
@@ -67,6 +74,36 @@ describe("ForgotPasswordUseCase", () => {
         accountId: account.id,
         expiresAt: DateTime.now().plus({ days: 1 }),
         token: expect.any(String),
+      },
+    ]);
+  });
+
+  it("should save a PasswordResetRequestedDomainEvent to the outbox upon successfully requesting a password reset", async () => {
+    // Given
+    const account = {
+      email: "registered@call-me-dev.com",
+      id: "1",
+      password: "password",
+    };
+
+    accounts.snapshots.set(account.id, account);
+
+    // When
+    await useCase.execute({
+      email: account.email,
+    });
+
+    // Then
+    expect(outboxMessages.snapshots.values().toArray()).toEqual([
+      {
+        id: expect.any(String),
+        payload: {
+          id: expect.any(String),
+          accountId: account.id,
+          expiresAt: DateTime.now().plus({ days: 1 }),
+          token: expect.any(String),
+        },
+        type: "PasswordResetRequestedDomainEvent",
       },
     ]);
   });

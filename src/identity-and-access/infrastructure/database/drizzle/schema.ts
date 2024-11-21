@@ -1,4 +1,3 @@
-import type { TransactionalAdapterDrizzleOrm } from "@nestjs-cls/transactional-adapter-drizzle-orm";
 import { sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import {
@@ -56,6 +55,3 @@ export const passwordResetRequestSchema = pgTable(
 export type IdentityAndAccessDatabase = NodePgDatabase<{
   accounts: typeof accountSchema;
 }>;
-
-export type IdentityAndAccessDatabaseTransactionAdapter =
-  TransactionalAdapterDrizzleOrm<IdentityAndAccessDatabase>;

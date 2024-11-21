@@ -1,5 +1,6 @@
 import { JwtServiceToken } from "@identity-and-access/infrastructure/services/jwt.service.js";
 import { Module } from "@nestjs/common";
+import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-message/repository.js";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
 import { PasswordResetRequestRepositoryToken } from "./domain/password-reset-request/repository.js";
 import { DrizzleAccountRepository } from "./infrastructure/repositories/drizzle-account.repository.js";
@@ -40,7 +41,11 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
       useFactory: (
         ...args: ConstructorParameters<typeof ForgotPasswordUseCase>
       ) => new ForgotPasswordUseCase(...args),
-      inject: [AccountRepositoryToken, PasswordResetRequestRepositoryToken],
+      inject: [
+        AccountRepositoryToken,
+        PasswordResetRequestRepositoryToken,
+        OutboxMessageRepositoryToken,
+      ],
     },
     {
       provide: SignInWithCredentialsUseCase,
