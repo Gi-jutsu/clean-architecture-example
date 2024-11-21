@@ -94,7 +94,7 @@ describe("ForgotPasswordUseCase", () => {
     });
 
     // Then
-    expect(outboxMessages.snapshots.values().toArray()).toEqual([
+    expect([...outboxMessages.snapshots.values()]).toEqual([
       {
         id: expect.any(String),
         payload: {
