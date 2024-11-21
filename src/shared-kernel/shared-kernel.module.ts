@@ -4,7 +4,7 @@ import { APP_INTERCEPTOR } from "@nestjs/core";
 import { OutboxMessageRepositoryToken } from "./domain/outbox-message/repository.js";
 import { DatabaseModule } from "./infrastructure/database/database.module.js";
 import { MapErrorToRfc9457HttpException } from "./infrastructure/map-error-to-rfc9457-http-exception.interceptor.js";
-import { InMemoryOutboxMessageRepository } from "./infrastructure/repositories/in-memory-outbox-message.repository.js";
+import { DrizzleOutboxMessageRepository } from "./infrastructure/repositories/drizzle-outbox-message.repository.js";
 import { HealthCheckHttpController } from "./use-cases/health-check/http.controller.js";
 
 @Global()
@@ -19,7 +19,7 @@ import { HealthCheckHttpController } from "./use-cases/health-check/http.control
     },
     {
       provide: OutboxMessageRepositoryToken,
-      useClass: InMemoryOutboxMessageRepository,
+      useClass: DrizzleOutboxMessageRepository,
     },
   ],
   exports: [ConfigService, DatabaseModule, OutboxMessageRepositoryToken],

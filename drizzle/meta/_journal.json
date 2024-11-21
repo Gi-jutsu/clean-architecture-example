@@ -15,6 +15,13 @@
       "when": 1728664010372,
       "tag": "0001_illegal_sunset_bain",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1732214224642,
+      "tag": "0002_eager_boomerang",
+      "breakpoints": true
     }
   ]
 }
