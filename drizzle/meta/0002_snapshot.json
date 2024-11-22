@@ -1,5 +1,5 @@
 {
-  "id": "84449fea-aace-45f9-94cd-ddde8ecb0f41",
+  "id": "e8368b9d-933f-47de-a73c-c50b71a556e1",
   "prevId": "20fb321c-a6d4-4b5a-a63a-013ae90bb63f",
   "version": "7",
   "dialect": "postgresql",
@@ -156,34 +156,62 @@
           "primaryKey": true,
           "notNull": true
         },
+        "event_type": {
+          "name": "event_type",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
         "payload": {
           "name": "payload",
           "type": "jsonb",
           "primaryKey": false,
           "notNull": true
         },
-        "type": {
-          "name": "type",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
+        "occurred_at": {
+          "name": "occurred_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "processed_at": {
+          "name": "processed_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
+        },
+        "error_message": {
+          "name": "error_message",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "idx_outbox_messages_unprocessed": {
+          "name": "idx_outbox_messages_unprocessed",
+          "columns": [
+            {
+              "expression": "occurred_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "processed_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "where": "\"outbox_messages\".\"processed_at\" is null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},

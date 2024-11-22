@@ -12,8 +12,9 @@ export class Account extends AggregateRoot<Properties> {
 
     account.commit(
       new NewAccountRegisteredDomainEvent({
-        aggregateId: account.id,
-        payload: account.properties,
+        payload: {
+          email: account.properties.email,
+        },
       })
     );
 

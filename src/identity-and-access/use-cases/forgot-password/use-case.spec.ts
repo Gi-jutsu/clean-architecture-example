@@ -96,14 +96,16 @@ describe("ForgotPasswordUseCase", () => {
     // Then
     expect([...outboxMessages.snapshots.values()]).toEqual([
       {
+        errorMessage: null,
+        eventType: "PasswordResetRequestedDomainEvent",
         id: expect.any(String),
         payload: {
-          id: expect.any(String),
-          accountId: account.id,
+          accountId: "1",
           expiresAt: DateTime.now().plus({ days: 1 }),
+          id: expect.any(String),
           token: expect.any(String),
         },
-        type: "PasswordResetRequestedDomainEvent",
+        processedAt: null,
       },
     ]);
   });

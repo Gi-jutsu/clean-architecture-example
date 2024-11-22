@@ -6,6 +6,7 @@ import { DatabaseModule } from "./infrastructure/database/database.module.js";
 import { MapErrorToRfc9457HttpException } from "./infrastructure/map-error-to-rfc9457-http-exception.interceptor.js";
 import { DrizzleOutboxMessageRepository } from "./infrastructure/repositories/drizzle-outbox-message.repository.js";
 import { HealthCheckHttpController } from "./use-cases/health-check/http.controller.js";
+import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-messages/use-case.js";
 
 @Global()
 @Module({
@@ -20,6 +21,13 @@ import { HealthCheckHttpController } from "./use-cases/health-check/http.control
     {
       provide: OutboxMessageRepositoryToken,
       useClass: DrizzleOutboxMessageRepository,
+    },
+    {
+      provide: ProcessOutboxMessagesUseCase,
+      useFactory: (
+        ...args: ConstructorParameters<typeof ProcessOutboxMessagesUseCase>
+      ) => new ProcessOutboxMessagesUseCase(...args),
+      inject: [OutboxMessageRepositoryToken],
     },
   ],
   exports: [ConfigService, DatabaseModule, OutboxMessageRepositoryToken],

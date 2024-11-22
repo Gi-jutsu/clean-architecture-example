@@ -1,19 +1,37 @@
+import { isNull } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { jsonb, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import {
+  index,
+  jsonb,
+  pgTable,
+  timestamp,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core";
 import { randomUUID } from "node:crypto";
 
-export const outboxMessageSchema = pgTable("outbox_messages", {
-  id: uuid("id")
-    .$defaultFn(() => randomUUID())
-    .primaryKey(),
-  payload: jsonb("payload").notNull().$type<Record<string, unknown>>(),
-  type: varchar("type", { length: 255 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .notNull()
-    .$defaultFn(() => new Date()),
-});
+export const outboxMessageSchema = pgTable(
+  "outbox_messages",
+  {
+    id: uuid("id")
+      .$defaultFn(() => randomUUID())
+      .primaryKey(),
+    eventType: varchar("event_type").notNull(),
+    payload: jsonb("payload").notNull().$type<Record<string, unknown>>(),
+    occurredAt: timestamp("occurred_at").defaultNow().notNull(),
+    processedAt: timestamp("processed_at"),
+    errorMessage: varchar("error_message"),
+  },
+  (table) => {
+    return {
+      idx_outbox_messages_unprocessed: index("idx_outbox_messages_unprocessed")
+        .on(table.occurredAt, table.processedAt)
+        // @FIXME PostgreSQL 'INCLUDE' is not supported by drizzle-orm
+        // @see https://github.com/drizzle-team/drizzle-orm/issues/2972
+        .where(isNull(table.processedAt)),
+    };
+  }
+);
 
 export type SharedKernelDatabase = NodePgDatabase<{
   outboxMessages: typeof outboxMessageSchema;
