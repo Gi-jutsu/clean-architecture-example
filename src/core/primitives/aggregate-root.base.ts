@@ -16,7 +16,7 @@ export abstract class AggregateRoot<
   Properties extends Record<keyof Properties, unknown>
 > {
   public readonly id: AggregateRootProperties["id"];
-  private readonly _properties: Properties;
+  protected readonly _properties: Properties;
   // @TODO: Benchmark the performance on high-scale events (consider using a queue)
   private readonly _domainEvents: DomainEvent[] = [];
 
@@ -27,7 +27,7 @@ export abstract class AggregateRoot<
 
   static hydrate<Constructor extends new (...args: any) => any>(
     this: Constructor,
-    ...args: any
+    ...args: ConstructorParameters<Constructor>
   ): InstanceType<Constructor> {
     return new this(...args);
   }
