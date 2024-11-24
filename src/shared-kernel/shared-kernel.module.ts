@@ -1,3 +1,4 @@
+import { createFactoryForUseCase } from "@core/use-case.factory.js";
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_INTERCEPTOR } from "@nestjs/core";
@@ -24,9 +25,7 @@ import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-message
     },
     {
       provide: ProcessOutboxMessagesUseCase,
-      useFactory: (
-        ...args: ConstructorParameters<typeof ProcessOutboxMessagesUseCase>
-      ) => new ProcessOutboxMessagesUseCase(...args),
+      useFactory: createFactoryForUseCase(ProcessOutboxMessagesUseCase),
       inject: [OutboxMessageRepositoryToken],
     },
   ],

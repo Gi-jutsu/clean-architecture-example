@@ -1,3 +1,4 @@
+import { createFactoryForUseCase } from "@core/use-case.factory.js";
 import { Module } from "@nestjs/common";
 import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-message/repository.js";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
@@ -38,9 +39,7 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
     /** Use cases */
     {
       provide: ForgotPasswordUseCase,
-      useFactory: (
-        ...args: ConstructorParameters<typeof ForgotPasswordUseCase>
-      ) => new ForgotPasswordUseCase(...args),
+      useFactory: createFactoryForUseCase(ForgotPasswordUseCase),
       inject: [
         AccountRepositoryToken,
         PasswordResetRequestRepositoryToken,
@@ -49,9 +48,7 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
     },
     {
       provide: SignInWithCredentialsUseCase,
-      useFactory: (
-        ...args: ConstructorParameters<typeof SignInWithCredentialsUseCase>
-      ) => new SignInWithCredentialsUseCase(...args),
+      useFactory: createFactoryForUseCase(SignInWithCredentialsUseCase),
       inject: [AccountRepositoryToken, JwtServiceToken],
     },
     {
