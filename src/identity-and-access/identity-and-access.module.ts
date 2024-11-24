@@ -1,7 +1,7 @@
-import { JwtServiceToken } from "@identity-and-access/infrastructure/services/jwt.service.js";
 import { Module } from "@nestjs/common";
 import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-message/repository.js";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
+import { createJwtService, JwtServiceToken } from "./domain/jwt.service.js";
 import { PasswordResetRequestRepositoryToken } from "./domain/password-reset-request/repository.js";
 import { DrizzleAccountRepository } from "./infrastructure/repositories/drizzle-account.repository.js";
 import { DrizzlePasswordResetRequestRepository } from "./infrastructure/repositories/drizzle-password-reset-request.repository.js";
@@ -32,7 +32,7 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
     /** Services */
     {
       provide: JwtServiceToken,
-      useValue: (await import("jsonwebtoken")).default,
+      useValue: createJwtService(),
     },
 
     /** Use cases */
