@@ -1,13 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { OutboxMessage } from "@shared-kernel/domain/outbox-message/aggregate-root.js";
 import type { OutboxMessageRepository } from "@shared-kernel/domain/outbox-message/repository.js";
-import { and, gte, isNull } from "drizzle-orm";
-import { DateTime } from "luxon";
-import { DrizzlePostgresPoolToken } from "../database/drizzle/constants.js";
+import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/database/drizzle/constants.js";
 import {
   outboxMessageSchema,
-  SharedKernelDatabase,
-} from "../database/drizzle/schema.js";
+  type SharedKernelDatabase,
+} from "@shared-kernel/infrastructure/database/drizzle/schema.js";
+import { and, gte, isNull } from "drizzle-orm";
+import { DateTime } from "luxon";
 
 @Injectable()
 export class DrizzleOutboxMessageRepository implements OutboxMessageRepository {
