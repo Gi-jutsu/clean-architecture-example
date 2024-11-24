@@ -53,9 +53,7 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
     },
     {
       provide: SignUpWithCredentialsUseCase,
-      useFactory: (
-        ...args: ConstructorParameters<typeof SignUpWithCredentialsUseCase>
-      ) => new SignUpWithCredentialsUseCase(...args),
+      useFactory: createFactoryForUseCase(SignUpWithCredentialsUseCase),
       inject: [AccountRepositoryToken],
     },
   ],
