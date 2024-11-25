@@ -15,13 +15,13 @@ describe("SignInWithCredentialsHttpController", () => {
   });
 
   describe("POST /auth/sign-in", () => {
-    it("should return 200 and set the access token in a secure, HTTP-only, SameSite=Strict cookie when the credentials are valid", async () => {
+    it("should return 204 and set the access token in a secure, HTTP-only, SameSite=Strict cookie when the credentials are valid", async () => {
       const response = await supertest(server).post("/auth/sign-in").send({
         email: "dylan@call-me-dev.com",
         password: "password",
       });
 
-      expect(response.status).toEqual(200);
+      expect(response.status).toEqual(204);
       expect(response.headers["set-cookie"][0]).toMatch(
         new RegExp(
           "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.[A-Za-z0-9-_]+.[A-Za-z0-9-_]+; Path=/; HttpOnly; Secure; SameSite=Strict"

@@ -6,6 +6,12 @@ export class InMemoryPasswordResetRequestRepository
 {
   snapshots = new Map();
 
+  async hasPendingRequest(accountId: string): Promise<boolean> {
+    return [...this.snapshots.values()].some(
+      (request) => request.accountId === accountId
+    );
+  }
+
   async save(request: PasswordResetRequest): Promise<void> {
     this.snapshots.set(request.id, request.properties);
   }

@@ -6,6 +6,7 @@ import {
 } from "@identity-and-access/infrastructure/database/drizzle/schema.js";
 import { Inject, Injectable } from "@nestjs/common";
 import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/database/drizzle/constants.js";
+import { count, eq } from "drizzle-orm";
 
 @Injectable()
 export class DrizzlePasswordResetRequestRepository
@@ -15,6 +16,16 @@ export class DrizzlePasswordResetRequestRepository
     @Inject(DrizzlePostgresPoolToken)
     private readonly database: IdentityAndAccessDatabase
   ) {}
+
+  async hasPendingRequest(accountId: string): Promise<boolean> {
+    const results = await this.database
+      .select({ count: count() })
+      .from(passwordResetRequestSchema)
+      .where(eq(passwordResetRequestSchema.accountId, accountId))
+      .execute();
+
+    return results[0].count > 0;
+  }
 
   async save(request: PasswordResetRequest): Promise<void> {
     const values = {

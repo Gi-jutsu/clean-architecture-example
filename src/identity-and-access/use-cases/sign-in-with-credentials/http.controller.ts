@@ -15,7 +15,7 @@ export class SignInWithCredentialsHttpController {
   constructor(private readonly useCase: SignInWithCredentialsUseCase) {}
 
   @Post("/auth/sign-in")
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async handle(
     @Body() body: SignInWithCredentialsHttpRequestBody,
     @Res() response: Response

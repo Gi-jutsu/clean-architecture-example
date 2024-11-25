@@ -13,13 +13,10 @@ export class ForgotPasswordUseCase {
   ) {}
 
   async execute(command: ForgotPasswordCommand) {
-    const account = await this.allAccounts.findByEmail(command.email);
-    if (!account) {
-      throw new ResourceNotFoundError({
-        resource: "Account",
-        searchedByFieldName: "email",
-        searchedByValue: command.email,
-      });
+    const account = await this.getAccountByEmail(command.email);
+
+    if (await this.allPasswordResetRequests.hasPendingRequest(account.id)) {
+      return;
     }
 
     const request = PasswordResetRequest.create({
@@ -29,6 +26,18 @@ export class ForgotPasswordUseCase {
     // @TODO: Must be done in a SQL Transaction
     await this.allPasswordResetRequests.save(request);
     await this.saveDomainEventsAsOutboxMessages(request);
+  }
+
+  private async getAccountByEmail(email: string) {
+    const account = await this.allAccounts.findByEmail(email);
+    if (!account) {
+      throw new ResourceNotFoundError({
+        resource: "Account",
+        searchedByFieldName: "email",
+        searchedByValue: email,
+      });
+    }
+    return account;
   }
 
   private async saveDomainEventsAsOutboxMessages(

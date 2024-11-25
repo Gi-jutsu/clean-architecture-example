@@ -78,6 +78,39 @@ describe("ForgotPasswordUseCase", () => {
     ]);
   });
 
+  // @TODO: Later on we should refresh the password reset request token and expiration date and send a new email
+  it("should return the same password reset request when the password reset process has already been initiated", async () => {
+    // Given
+    const account = {
+      email: "registered@call-me-dev.com",
+      id: "1",
+      password: "password",
+    };
+
+    const existingPasswordResetRequest = {
+      id: "reset-1",
+      accountId: account.id,
+      expiresAt: DateTime.now().plus({ days: 1 }),
+      token: "existing-token",
+    };
+
+    allAccounts.snapshots.set(account.id, account);
+    allPasswordResetRequests.snapshots.set(
+      existingPasswordResetRequest.id,
+      existingPasswordResetRequest
+    );
+
+    // When
+    await useCase.execute({
+      email: account.email,
+    });
+
+    // Then
+    expect([...allPasswordResetRequests.snapshots.values()]).toEqual([
+      existingPasswordResetRequest,
+    ]);
+  });
+
   it("should save a PasswordResetRequestedDomainEvent to the outbox upon successfully requesting a password reset", async () => {
     // Given
     const account = {
