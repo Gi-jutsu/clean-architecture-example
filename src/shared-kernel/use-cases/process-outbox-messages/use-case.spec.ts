@@ -35,9 +35,10 @@ describe("ProcessOutboxMessagesUseCase", () => {
     repository.snapshots.clear();
   });
 
-  it("should process outbox messages", async () => {
+  // @TODO: consider batching messages when reaching high number of messages per tick
+  it("should process all unprocessed messages", async () => {
     // Given
-    const unprocessedMessage = {
+    const unprocessedMessageA = {
       id: "1",
       errorMessage: null,
       eventType: "event-a",
@@ -45,7 +46,16 @@ describe("ProcessOutboxMessagesUseCase", () => {
       processedAt: null,
     };
 
-    repository.snapshots.set(unprocessedMessage.id, unprocessedMessage);
+    const unprocessedMessageB = {
+      id: "2",
+      errorMessage: null,
+      eventType: "event-b",
+      payload: {},
+      processedAt: null,
+    };
+
+    repository.snapshots.set(unprocessedMessageA.id, unprocessedMessageA);
+    repository.snapshots.set(unprocessedMessageB.id, unprocessedMessageB);
 
     // When
     await useCase.execute();
@@ -53,10 +63,17 @@ describe("ProcessOutboxMessagesUseCase", () => {
     // Then
     expect([...repository.snapshots.values()]).toEqual([
       {
-        id: unprocessedMessage.id,
+        id: unprocessedMessageA.id,
         errorMessage: null,
-        eventType: unprocessedMessage.eventType,
-        payload: unprocessedMessage.payload,
+        eventType: unprocessedMessageA.eventType,
+        payload: unprocessedMessageA.payload,
+        processedAt: DateTime.now().toJSDate(),
+      },
+      {
+        id: unprocessedMessageB.id,
+        errorMessage: null,
+        eventType: unprocessedMessageB.eventType,
+        payload: unprocessedMessageB.payload,
         processedAt: DateTime.now().toJSDate(),
       },
     ]);
@@ -64,25 +81,24 @@ describe("ProcessOutboxMessagesUseCase", () => {
 
   it("should emit an event when a message is processed", async () => {
     // Given
-    const unprocessedMessage = {
+    const unprocessedMessageC = {
       id: "1",
       errorMessage: null,
-      eventType: "event-b",
+      eventType: "event-c",
       payload: {},
       processedAt: null,
     };
 
-    repository.snapshots.set(unprocessedMessage.id, unprocessedMessage);
+    repository.snapshots.set(unprocessedMessageC.id, unprocessedMessageC);
 
     // When
     await useCase.execute();
 
     // Then
-    console.log(eventEmitter.emittedEvents);
     expect(eventEmitter.emittedEvents).toEqual([
       {
-        event: "event-b",
-        values: [unprocessedMessage.payload],
+        event: "event-c",
+        values: [unprocessedMessageC.payload],
       },
     ]);
   });
