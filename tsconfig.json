@@ -9,6 +9,7 @@
       "@identity-and-access/*": ["./src/identity-and-access/*"],
       "@shared-kernel/*": ["./src/shared-kernel/*"]
     },
+    "strictNullChecks": true,
     "target": "ESNext"
   }
 }

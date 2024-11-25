@@ -2,7 +2,7 @@ import { createFactoryForUseCase } from "@core/use-case.factory.js";
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_INTERCEPTOR } from "@nestjs/core";
-import { EventEmitterModule } from "@nestjs/event-emitter";
+import { EventEmitter2, EventEmitterModule } from "@nestjs/event-emitter";
 import {
   createEventEmitterService,
   EventEmitterServiceToken,
@@ -39,7 +39,7 @@ import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-message
     {
       provide: ProcessOutboxMessagesUseCase,
       useFactory: createFactoryForUseCase(ProcessOutboxMessagesUseCase),
-      inject: [OutboxMessageRepositoryToken],
+      inject: [EventEmitter2, OutboxMessageRepositoryToken],
     },
   ],
   exports: [ConfigService, DatabaseModule, OutboxMessageRepositoryToken],

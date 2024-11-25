@@ -6,7 +6,7 @@ import {
   outboxMessageSchema,
   type SharedKernelDatabase,
 } from "@shared-kernel/infrastructure/database/drizzle/schema.js";
-import { and, gte, isNull } from "drizzle-orm";
+import { and, isNull, lte, sql } from "drizzle-orm";
 import { DateTime } from "luxon";
 
 @Injectable()
@@ -22,7 +22,7 @@ export class DrizzleOutboxMessageRepository implements OutboxMessageRepository {
       .from(outboxMessageSchema)
       .where(
         and(
-          gte(outboxMessageSchema.occurredAt, DateTime.now().toJSDate()),
+          lte(outboxMessageSchema.occurredAt, DateTime.now().toJSDate()),
           isNull(outboxMessageSchema.processedAt)
         )
       );
@@ -41,6 +41,11 @@ export class DrizzleOutboxMessageRepository implements OutboxMessageRepository {
     await this.database
       .insert(outboxMessageSchema)
       .values(snapshots)
-      .onConflictDoNothing();
+      .onConflictDoUpdate({
+        target: outboxMessageSchema.id,
+        set: {
+          processedAt: sql`NOW()`,
+        },
+      });
   }
 }

@@ -5,7 +5,13 @@ export class ProcessOutboxMessagesUseCase {
   constructor(
     private readonly allDomainEvents: EventEmitterService,
     private readonly outboxMessages: OutboxMessageRepository
-  ) {}
+  ) {
+    // @TODO: Use @nestjs/schedule instead of setInterval
+    // Only for testing purposes
+    setInterval(async () => {
+      await this.execute();
+    }, 1000);
+  }
 
   async execute() {
     const messages = await this.outboxMessages.findUnprocessedMessages();
