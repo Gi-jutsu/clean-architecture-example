@@ -13,7 +13,7 @@ export class InMemoryOutboxMessageRepository
     return Array.from(this.snapshots.values())
       .filter((snapshot) => snapshot.processedAt === null)
       .map((snapshot) =>
-        OutboxMessage.hydrate({ id: snapshot.id, properties: snapshot })
+        OutboxMessage.hydrate({ id: snapshot.id, properties: { ...snapshot } })
       );
   }
 
