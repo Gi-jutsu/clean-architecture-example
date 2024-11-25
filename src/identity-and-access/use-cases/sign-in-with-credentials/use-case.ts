@@ -1,16 +1,16 @@
 import { ResourceNotFoundError } from "@core/errors/resource-not-found.error.js";
 import type { AccountRepository } from "@identity-and-access/domain/account/repository.js";
-import type { JwtService } from "@identity-and-access/infrastructure/services/jwt.service.js";
+import type { JwtService } from "@identity-and-access/domain/jwt.service.js";
 import { WrongPasswordError } from "./errors/wrong-password.error.js";
 
 export class SignInWithCredentialsUseCase {
   constructor(
-    private readonly repository: AccountRepository,
+    private readonly allAccounts: AccountRepository,
     private readonly jwt: JwtService
   ) {}
 
   async execute(command: SignInWithCredentialsCommand) {
-    const account = await this.repository.findByEmail(command.email);
+    const account = await this.allAccounts.findByEmail(command.email);
 
     if (!account) {
       throw new ResourceNotFoundError({
@@ -25,6 +25,7 @@ export class SignInWithCredentialsUseCase {
     }
 
     return {
+      // @TODO: Retrieve secret from environment variable
       accessToken: this.jwt.sign({ sub: account.id }, "secret"),
     };
   }

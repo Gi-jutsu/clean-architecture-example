@@ -3,6 +3,3 @@ export interface JwtService {
 }
 
 export const JwtServiceToken = Symbol("JwtService");
-
-export const createJwtService = async () =>
-  (await import("jsonwebtoken")).default;

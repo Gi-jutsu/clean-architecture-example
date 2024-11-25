@@ -7,13 +7,13 @@ import type { OutboxMessageRepository } from "@shared-kernel/domain/outbox-messa
 
 export class ForgotPasswordUseCase {
   constructor(
-    private readonly accounts: AccountRepository,
-    private readonly passwordResetRequests: PasswordResetRequestRepository,
-    private readonly outboxMessages: OutboxMessageRepository
+    private readonly allAccounts: AccountRepository,
+    private readonly allPasswordResetRequests: PasswordResetRequestRepository,
+    private readonly allOutboxMessages: OutboxMessageRepository
   ) {}
 
   async execute(command: ForgotPasswordCommand) {
-    const account = await this.accounts.findByEmail(command.email);
+    const account = await this.allAccounts.findByEmail(command.email);
     if (!account) {
       throw new ResourceNotFoundError({
         resource: "Account",
@@ -27,7 +27,7 @@ export class ForgotPasswordUseCase {
     });
 
     // @TODO: Must be done in a SQL Transaction
-    await this.passwordResetRequests.save(request);
+    await this.allPasswordResetRequests.save(request);
     await this.saveDomainEventsAsOutboxMessages(request);
   }
 
@@ -37,7 +37,7 @@ export class ForgotPasswordUseCase {
     const events = request.pullDomainEvents();
     const messages = events.map(OutboxMessage.createFromDomainEvent);
 
-    await this.outboxMessages.save(messages);
+    await this.allOutboxMessages.save(messages);
   }
 }
 

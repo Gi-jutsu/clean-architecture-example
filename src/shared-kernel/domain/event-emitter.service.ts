@@ -3,6 +3,3 @@ export interface EventEmitterService {
 }
 
 export const EventEmitterServiceToken = Symbol("EventEmitterService");
-
-export const createEventEmitterService = async () =>
-  (await import("@nestjs/event-emitter")).EventEmitter2;

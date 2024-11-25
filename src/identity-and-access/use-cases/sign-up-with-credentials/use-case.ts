@@ -3,10 +3,10 @@ import { Account } from "@identity-and-access/domain/account/aggregate-root.js";
 import type { AccountRepository } from "@identity-and-access/domain/account/repository.js";
 
 export class SignUpWithCredentialsUseCase {
-  constructor(private readonly repository: AccountRepository) {}
+  constructor(private readonly allAccounts: AccountRepository) {}
 
   async execute(command: SignInWithCredentialsCommand) {
-    const isEmailTaken = await this.repository.isEmailTaken(command.email);
+    const isEmailTaken = await this.allAccounts.isEmailTaken(command.email);
     if (isEmailTaken) {
       throw new ResourceAlreadyExistsError({
         conflictingFieldName: "email",
@@ -20,7 +20,7 @@ export class SignUpWithCredentialsUseCase {
       password: command.password,
     });
 
-    await this.repository.save(account);
+    await this.allAccounts.save(account);
 
     return {
       account: { id: account.id },

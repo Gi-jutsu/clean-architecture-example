@@ -1,12 +1,9 @@
-import { createFactoryForUseCase } from "@core/use-case.factory.js";
+import { createFactoryFromConstructor } from "@core/create-factory-from-constructor.js";
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { EventEmitter2, EventEmitterModule } from "@nestjs/event-emitter";
-import {
-  createEventEmitterService,
-  EventEmitterServiceToken,
-} from "./domain/event-emitter.service.js";
+import { EventEmitterServiceToken } from "./domain/event-emitter.service.js";
 import { OutboxMessageRepositoryToken } from "./domain/outbox-message/repository.js";
 import { DatabaseModule } from "./infrastructure/database/database.module.js";
 import { MapErrorToRfc9457HttpException } from "./infrastructure/map-error-to-rfc9457-http-exception.interceptor.js";
@@ -34,11 +31,11 @@ import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-message
     },
     {
       provide: EventEmitterServiceToken,
-      useValue: createEventEmitterService(),
+      useValue: (await import("@nestjs/event-emitter")).EventEmitter2,
     },
     {
       provide: ProcessOutboxMessagesUseCase,
-      useFactory: createFactoryForUseCase(ProcessOutboxMessagesUseCase),
+      useFactory: createFactoryFromConstructor(ProcessOutboxMessagesUseCase),
       inject: [EventEmitter2, OutboxMessageRepositoryToken],
     },
   ],

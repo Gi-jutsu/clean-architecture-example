@@ -12,15 +12,17 @@ class MockEventEmitterService implements EventEmitterService {
   }
 
   clear() {
-    console.log("clearing emitted events");
     this.emittedEvents = [];
   }
 }
 
 describe("ProcessOutboxMessagesUseCase", () => {
   const eventEmitter = new MockEventEmitterService();
-  const repository = new InMemoryOutboxMessageRepository();
-  const useCase = new ProcessOutboxMessagesUseCase(eventEmitter, repository);
+  const allOutboxMessages = new InMemoryOutboxMessageRepository();
+  const useCase = new ProcessOutboxMessagesUseCase(
+    eventEmitter,
+    allOutboxMessages
+  );
 
   beforeAll(() => {
     Settings.now = () => new Date(0).getMilliseconds();
@@ -32,7 +34,7 @@ describe("ProcessOutboxMessagesUseCase", () => {
 
   afterEach(() => {
     eventEmitter.clear();
-    repository.snapshots.clear();
+    allOutboxMessages.snapshots.clear();
   });
 
   // @TODO: consider batching messages when reaching high number of messages per tick
@@ -54,14 +56,20 @@ describe("ProcessOutboxMessagesUseCase", () => {
       processedAt: null,
     };
 
-    repository.snapshots.set(unprocessedMessageA.id, unprocessedMessageA);
-    repository.snapshots.set(unprocessedMessageB.id, unprocessedMessageB);
+    allOutboxMessages.snapshots.set(
+      unprocessedMessageA.id,
+      unprocessedMessageA
+    );
+    allOutboxMessages.snapshots.set(
+      unprocessedMessageB.id,
+      unprocessedMessageB
+    );
 
     // When
     await useCase.execute();
 
     // Then
-    expect([...repository.snapshots.values()]).toEqual([
+    expect([...allOutboxMessages.snapshots.values()]).toEqual([
       {
         id: unprocessedMessageA.id,
         errorMessage: null,
@@ -89,7 +97,10 @@ describe("ProcessOutboxMessagesUseCase", () => {
       processedAt: null,
     };
 
-    repository.snapshots.set(unprocessedMessageC.id, unprocessedMessageC);
+    allOutboxMessages.snapshots.set(
+      unprocessedMessageC.id,
+      unprocessedMessageC
+    );
 
     // When
     await useCase.execute();

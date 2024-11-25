@@ -6,13 +6,13 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { ForgotPasswordUseCase } from "./use-case.js";
 
 describe("ForgotPasswordUseCase", () => {
-  const accounts = new InMemoryAccountRepository();
-  const passwordResetRequests = new InMemoryPasswordResetRequestRepository();
-  const outboxMessages = new InMemoryOutboxMessageRepository();
+  const allAccounts = new InMemoryAccountRepository();
+  const allPasswordResetRequests = new InMemoryPasswordResetRequestRepository();
+  const allOutboxMessages = new InMemoryOutboxMessageRepository();
   const useCase = new ForgotPasswordUseCase(
-    accounts,
-    passwordResetRequests,
-    outboxMessages
+    allAccounts,
+    allPasswordResetRequests,
+    allOutboxMessages
   );
 
   beforeAll(() => {
@@ -24,9 +24,9 @@ describe("ForgotPasswordUseCase", () => {
   });
 
   beforeEach(() => {
-    accounts.snapshots.clear();
-    passwordResetRequests.snapshots.clear();
-    outboxMessages.snapshots.clear();
+    allAccounts.snapshots.clear();
+    allPasswordResetRequests.snapshots.clear();
+    allOutboxMessages.snapshots.clear();
   });
 
   it("should throw an error when attempting to reset password for an unregistered email address", async () => {
@@ -60,7 +60,7 @@ describe("ForgotPasswordUseCase", () => {
       password: "password",
     };
 
-    accounts.snapshots.set(account.id, account);
+    allAccounts.snapshots.set(account.id, account);
 
     // When
     await useCase.execute({
@@ -68,7 +68,7 @@ describe("ForgotPasswordUseCase", () => {
     });
 
     // Then
-    expect([...passwordResetRequests.snapshots.values()]).toEqual([
+    expect([...allPasswordResetRequests.snapshots.values()]).toEqual([
       {
         id: expect.any(String),
         accountId: account.id,
@@ -86,7 +86,7 @@ describe("ForgotPasswordUseCase", () => {
       password: "password",
     };
 
-    accounts.snapshots.set(account.id, account);
+    allAccounts.snapshots.set(account.id, account);
 
     // When
     await useCase.execute({
@@ -94,7 +94,7 @@ describe("ForgotPasswordUseCase", () => {
     });
 
     // Then
-    expect([...outboxMessages.snapshots.values()]).toEqual([
+    expect([...allOutboxMessages.snapshots.values()]).toEqual([
       {
         errorMessage: null,
         eventType: "PasswordResetRequestedDomainEvent",

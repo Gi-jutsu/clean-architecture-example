@@ -4,17 +4,14 @@ import type { OutboxMessageRepository } from "@shared-kernel/domain/outbox-messa
 export class ProcessOutboxMessagesUseCase {
   constructor(
     private readonly allDomainEvents: EventEmitterService,
-    private readonly outboxMessages: OutboxMessageRepository
+    private readonly allOutboxMessages: OutboxMessageRepository
   ) {
-    // @TODO: Use @nestjs/schedule instead of setInterval
-    // Only for testing purposes
-    setInterval(async () => {
-      await this.execute();
-    }, 1000);
+    // @TODO: cron job
+    setInterval(() => this.execute(), 1_000);
   }
 
   async execute() {
-    const messages = await this.outboxMessages.findUnprocessedMessages();
+    const messages = await this.allOutboxMessages.findUnprocessedMessages();
 
     for (const message of messages) {
       const { eventType, payload } = message.properties;
@@ -22,7 +19,7 @@ export class ProcessOutboxMessagesUseCase {
 
       message.process();
 
-      await this.outboxMessages.save([message]);
+      await this.allOutboxMessages.save([message]);
     }
   }
 }

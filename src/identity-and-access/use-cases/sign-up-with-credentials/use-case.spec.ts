@@ -5,8 +5,8 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { SignUpWithCredentialsUseCase } from "./use-case.js";
 
 describe("SignUpWithCredentialsUseCase", () => {
-  const repository = new InMemoryAccountRepository();
-  const useCase = new SignUpWithCredentialsUseCase(repository);
+  const allAccounts = new InMemoryAccountRepository();
+  const useCase = new SignUpWithCredentialsUseCase(allAccounts);
 
   beforeAll(() => {
     Settings.now = () => new Date(0).getMilliseconds();
@@ -17,7 +17,7 @@ describe("SignUpWithCredentialsUseCase", () => {
   });
 
   afterEach(() => {
-    repository.snapshots.clear();
+    allAccounts.snapshots.clear();
   });
 
   it("should throw a ResourceAlreadyExists when the email is already taken", async () => {
@@ -28,7 +28,7 @@ describe("SignUpWithCredentialsUseCase", () => {
       password: "password",
     };
 
-    repository.snapshots.set(account.id, account);
+    allAccounts.snapshots.set(account.id, account);
 
     try {
       // When
@@ -65,7 +65,7 @@ describe("SignUpWithCredentialsUseCase", () => {
     const { account } = await useCase.execute(credentials);
 
     // Then
-    expect([...repository.snapshots.values()]).toEqual([
+    expect([...allAccounts.snapshots.values()]).toEqual([
       {
         id: account.id,
         email: credentials.email,
