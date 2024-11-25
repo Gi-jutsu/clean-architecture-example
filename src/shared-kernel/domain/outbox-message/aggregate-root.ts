@@ -22,6 +22,11 @@ export class OutboxMessage extends AggregateRoot<Properties> {
     });
   }
 
+  fail(errorMessage: string) {
+    this._properties.errorMessage = errorMessage;
+    this._properties.processedAt = DateTime.now().toJSDate();
+  }
+
   process() {
     this._properties.processedAt = DateTime.now().toJSDate();
   }

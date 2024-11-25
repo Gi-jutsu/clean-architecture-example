@@ -15,9 +15,13 @@ export class ProcessOutboxMessagesUseCase {
 
     for (const message of messages) {
       const { eventType, payload } = message.properties;
-      await this.allDomainEvents.emitAsync(eventType, payload);
 
-      message.process();
+      try {
+        await this.allDomainEvents.emitAsync(eventType, payload);
+        message.process();
+      } catch (error) {
+        message.fail(error.message);
+      }
 
       await this.allOutboxMessages.save([message]);
     }

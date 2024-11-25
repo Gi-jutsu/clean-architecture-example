@@ -6,8 +6,14 @@ import { ProcessOutboxMessagesUseCase } from "./use-case.js";
 
 class MockEventEmitterService implements EventEmitterService {
   emittedEvents: { event: string; values: any[] }[] = [];
+  shouldThrowError = false;
+  errorMessage: string = "An error occurred";
 
   async emitAsync(event: string, ...values: any[]): Promise<void> {
+    if (this.shouldThrowError) {
+      throw new Error(this.errorMessage);
+    }
+
     this.emittedEvents.push({ event, values });
   }
 
@@ -110,6 +116,39 @@ describe("ProcessOutboxMessagesUseCase", () => {
       {
         event: "event-c",
         values: [unprocessedMessageC.payload],
+      },
+    ]);
+  });
+
+  // @TODO: consider retrying messages when an error occurs
+  it("should set an error message when an error occurs while emitting an event", async () => {
+    // Given
+    const unprocessedMessageD = {
+      id: "1",
+      errorMessage: null,
+      eventType: "event-d",
+      payload: {},
+      processedAt: null,
+    };
+
+    allOutboxMessages.snapshots.set(
+      unprocessedMessageD.id,
+      unprocessedMessageD
+    );
+
+    eventEmitter.shouldThrowError = true;
+
+    // When
+    await useCase.execute();
+
+    // Then
+    expect([...allOutboxMessages.snapshots.values()]).toEqual([
+      {
+        id: unprocessedMessageD.id,
+        errorMessage: "An error occurred",
+        eventType: unprocessedMessageD.eventType,
+        payload: unprocessedMessageD.payload,
+        processedAt: DateTime.now().toJSDate(),
       },
     ]);
   });
