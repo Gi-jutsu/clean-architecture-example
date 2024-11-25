@@ -50,6 +50,12 @@ pnpm dev
 
 ## 🌟 Key Features
 
+### 📬 At-Least-Once Outbox Pattern
+
+- <b>Reliable Event Delivery</b>: Implements the outbox pattern to ensure events are reliably stored and dispatched.
+- `in_development` <b>Transaction Safety</b>: Events are saved in the outbox as part of the same database transaction as aggregate updates, ensuring consistency.
+- `in_development` <b>Background Processing</b>: A worker processes the outbox and guarantees eventual consistency.
+
 ### 🐳 Docker-Ready
 
 - <b>Optimized for Deployments</b>: Multi-stage build keeps the production image lean, reducing network footprint and speeding up deployments.
