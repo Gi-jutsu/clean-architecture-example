@@ -9,6 +9,7 @@ import { DatabaseModule } from "./infrastructure/database/database.module.js";
 import { MapErrorToRfc9457HttpException } from "./infrastructure/map-error-to-rfc9457-http-exception.interceptor.js";
 import { DrizzleOutboxMessageRepository } from "./infrastructure/repositories/drizzle-outbox-message.repository.js";
 import { HealthCheckHttpController } from "./use-cases/health-check/http.controller.js";
+import { ProcessOutboxMessagesScheduler } from "./use-cases/process-outbox-messages/scheduler.js";
 import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-messages/use-case.js";
 
 @Global()
@@ -32,6 +33,11 @@ import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-message
     {
       provide: EventEmitterServiceToken,
       useValue: (await import("@nestjs/event-emitter")).EventEmitter2,
+    },
+    {
+      provide: ProcessOutboxMessagesScheduler,
+      useFactory: createFactoryFromConstructor(ProcessOutboxMessagesScheduler),
+      inject: [ProcessOutboxMessagesUseCase],
     },
     {
       provide: ProcessOutboxMessagesUseCase,

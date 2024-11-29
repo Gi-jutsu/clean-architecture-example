@@ -5,10 +5,7 @@ export class ProcessOutboxMessagesUseCase {
   constructor(
     private readonly allDomainEvents: EventEmitterService,
     private readonly allOutboxMessages: OutboxMessageRepository
-  ) {
-    // @TODO: cron job
-    setInterval(() => this.execute(), 1_000);
-  }
+  ) {}
 
   async execute() {
     const messages = await this.allOutboxMessages.findUnprocessedMessages();
