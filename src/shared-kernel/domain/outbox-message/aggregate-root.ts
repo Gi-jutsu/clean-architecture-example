@@ -1,5 +1,5 @@
-import { AggregateRoot } from "@core/primitives/aggregate-root.base.js";
 import type { DomainEvent } from "@core/primitives/domain-event.base.js";
+import { Entity } from "@core/primitives/entity.base.js";
 import { DateTime } from "luxon";
 
 interface Properties {
@@ -9,8 +9,7 @@ interface Properties {
   errorMessage: string | null;
 }
 
-// @TODO: Bad Design, consider splitting AggregateRoot into two classes: AggregateRoot, Entity
-export class OutboxMessage extends AggregateRoot<Properties> {
+export class OutboxMessage extends Entity<Properties> {
   static createFromDomainEvent(event: DomainEvent) {
     return new OutboxMessage({
       properties: {

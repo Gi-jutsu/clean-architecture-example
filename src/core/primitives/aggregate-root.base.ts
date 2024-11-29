@@ -1,43 +1,14 @@
-import { randomUUID } from "node:crypto";
 import { DomainEvent } from "./domain-event.base.js";
-
-interface AggregateRootProperties {
-  id: string;
-}
-
-interface CreateAggregateRootProperties<
-  Properties extends Record<keyof Properties, unknown>
-> {
-  id?: AggregateRootProperties["id"];
-  properties: Properties;
-}
+import { Entity } from "./entity.base.js";
 
 export abstract class AggregateRoot<
   Properties extends Record<keyof Properties, unknown>
-> {
-  public readonly id: AggregateRootProperties["id"];
-  protected readonly _properties: Properties;
+> extends Entity<Properties> {
   // @TODO: Benchmark the performance on high-scale events (consider using a queue)
-  private readonly _domainEvents: DomainEvent[] = [];
-
-  constructor({ id, properties }: CreateAggregateRootProperties<Properties>) {
-    this.id = id ?? randomUUID();
-    this._properties = properties;
-  }
-
-  static hydrate<Constructor extends new (...args: any) => any>(
-    this: Constructor,
-    ...args: ConstructorParameters<Constructor>
-  ): InstanceType<Constructor> {
-    return new this(...args);
-  }
+  private readonly _events: DomainEvent[] = [];
 
   protected commit(event: DomainEvent) {
-    this._domainEvents.push(event);
-  }
-
-  private clearDomainEvents() {
-    this._domainEvents.length = 0;
+    this._events.push(event);
   }
 
   get properties() {
@@ -48,8 +19,9 @@ export abstract class AggregateRoot<
   }
 
   pullDomainEvents() {
-    const domainEvents = [...this._domainEvents];
-    this.clearDomainEvents();
-    return domainEvents;
+    const events = [...this._events];
+    this._events.length = 0;
+
+    return events;
   }
 }
