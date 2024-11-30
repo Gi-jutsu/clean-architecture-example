@@ -1,3 +1,4 @@
+import { FakePasswordHasher } from "@identity-and-access/infrastructure/fake-password-hasher.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
 import jwt from "jsonwebtoken";
 import { DateTime, Settings } from "luxon";
@@ -6,7 +7,11 @@ import { SignInWithCredentialsUseCase } from "./use-case.js";
 
 describe("SignInWithCredentialsUseCase", () => {
   const repository = new InMemoryAccountRepository();
-  const useCase = new SignInWithCredentialsUseCase(repository, jwt);
+  const useCase = new SignInWithCredentialsUseCase(
+    repository,
+    jwt,
+    new FakePasswordHasher()
+  );
 
   beforeAll(() => {
     Settings.now = () => new Date(0).getMilliseconds();
@@ -46,7 +51,7 @@ describe("SignInWithCredentialsUseCase", () => {
     const account = {
       email: "dylan@call-me-dev.com",
       id: "1",
-      password: "password",
+      password: "hashed-password",
     };
 
     repository.snapshots.set(account.id, account);

@@ -1,4 +1,5 @@
 import { ResourceAlreadyExistsError } from "@core/errors/resource-already-exists.error.js";
+import { FakePasswordHasher } from "@identity-and-access/infrastructure/fake-password-hasher.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
 import { DateTime, Settings } from "luxon";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
@@ -6,7 +7,10 @@ import { SignUpWithCredentialsUseCase } from "./use-case.js";
 
 describe("SignUpWithCredentialsUseCase", () => {
   const allAccounts = new InMemoryAccountRepository();
-  const useCase = new SignUpWithCredentialsUseCase(allAccounts);
+  const useCase = new SignUpWithCredentialsUseCase(
+    allAccounts,
+    new FakePasswordHasher()
+  );
 
   beforeAll(() => {
     Settings.now = () => new Date(0).getMilliseconds();
@@ -54,7 +58,7 @@ describe("SignUpWithCredentialsUseCase", () => {
     }
   });
 
-  it("should create an account", async () => {
+  it("should create an account with a hashed password", async () => {
     // Given
     const credentials = {
       email: "dylan@call-me-dev.com",
@@ -69,7 +73,7 @@ describe("SignUpWithCredentialsUseCase", () => {
       {
         id: account.id,
         email: credentials.email,
-        password: credentials.password,
+        password: "hashed-password",
       },
     ]);
   });

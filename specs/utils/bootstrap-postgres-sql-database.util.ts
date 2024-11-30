@@ -26,7 +26,8 @@ export async function bootstrapPostgresSqlDatabase() {
     {
       id: "52afc7a5-f0e7-4477-b5c7-249ef34099a1",
       email: "dylan@call-me-dev.com",
-      password: "password",
+      // password: "password" (hashed with bcrypt using 10 rounds)
+      password: "$2b$10$KSdssXhRW/VjBlb7uAMt.OgwcwjycWZx8oCxam6JV.hmL0BMPp.iu",
     },
   ];
 

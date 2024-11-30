@@ -2,7 +2,8 @@ import { createFactoryFromConstructor } from "@core/create-factory-from-construc
 import { Module } from "@nestjs/common";
 import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-message/repository.js";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
-import { JwtServiceToken } from "./domain/jwt.service.js";
+import { JwtToken } from "./domain/jwt.port.js";
+import { PasswordHasherToken } from "./domain/password-hasher.port.js";
 import { PasswordResetRequestRepositoryToken } from "./domain/password-reset-request/repository.js";
 import { DrizzleAccountRepository } from "./infrastructure/repositories/drizzle-account.repository.js";
 import { DrizzlePasswordResetRequestRepository } from "./infrastructure/repositories/drizzle-password-reset-request.repository.js";
@@ -30,10 +31,14 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
       useClass: DrizzlePasswordResetRequestRepository,
     },
 
-    /** Services */
+    /** Ports */
     {
-      provide: JwtServiceToken,
+      provide: JwtToken,
       useValue: (await import("jsonwebtoken")).default,
+    },
+    {
+      provide: PasswordHasherToken,
+      useValue: (await import("bcrypt")).default,
     },
 
     /** Use cases */
@@ -49,12 +54,12 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
     {
       provide: SignInWithCredentialsUseCase,
       useFactory: createFactoryFromConstructor(SignInWithCredentialsUseCase),
-      inject: [AccountRepositoryToken, JwtServiceToken],
+      inject: [AccountRepositoryToken, JwtToken, PasswordHasherToken],
     },
     {
       provide: SignUpWithCredentialsUseCase,
       useFactory: createFactoryFromConstructor(SignUpWithCredentialsUseCase),
-      inject: [AccountRepositoryToken],
+      inject: [AccountRepositoryToken, PasswordHasherToken],
     },
   ],
 })
