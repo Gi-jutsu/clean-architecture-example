@@ -6,7 +6,7 @@ import { EventEmitter2, EventEmitterModule } from "@nestjs/event-emitter";
 import { EventEmitterServiceToken } from "./domain/event-emitter.service.js";
 import { OutboxMessageRepositoryToken } from "./domain/outbox-message/repository.js";
 import { DatabaseModule } from "./infrastructure/database/database.module.js";
-import { HttpResponseLoggerInterceptor } from "./infrastructure/http-response-logger.interceptor.js";
+import { HttpLoggerInterceptor } from "./infrastructure/http-logger.interceptor.js";
 import { MapErrorToRfc9457HttpException } from "./infrastructure/map-error-to-rfc9457-http-exception.interceptor.js";
 import { DrizzleOutboxMessageRepository } from "./infrastructure/repositories/drizzle-outbox-message.repository.js";
 import { HealthCheckHttpController } from "./use-cases/health-check/http.controller.js";
@@ -25,7 +25,7 @@ import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-message
     ConfigService,
     {
       provide: APP_INTERCEPTOR,
-      useClass: HttpResponseLoggerInterceptor,
+      useClass: HttpLoggerInterceptor,
     },
     {
       provide: APP_INTERCEPTOR,
