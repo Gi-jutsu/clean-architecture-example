@@ -6,7 +6,7 @@ import { EventEmitter2, EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { EventEmitterToken } from "./domain/event-emitter.interface.js";
 import { OutboxMessageRepositoryToken } from "./domain/outbox-message/repository.js";
-import { DatabaseModule } from "./infrastructure/database/database.module.js";
+import { DrizzleModule } from "./infrastructure/drizzle/module.js";
 import { HttpLoggerInterceptor } from "./infrastructure/http-logger.interceptor.js";
 import { MapErrorToRfc9457HttpException } from "./infrastructure/map-error-to-rfc9457-http-exception.interceptor.js";
 import { DrizzleOutboxMessageRepository } from "./infrastructure/repositories/drizzle-outbox-message.repository.js";
@@ -21,7 +21,12 @@ const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    DatabaseModule,
+    DrizzleModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        connectionString: config.getOrThrow("DATABASE_URL"),
+      }),
+    }),
     EventEmitterModule.forRoot(),
     ThrottlerModule.forRoot([
       {
@@ -64,6 +69,6 @@ const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
       inject: [OutboxMessageRepositoryToken, EventEmitter2],
     },
   ],
-  exports: [ConfigService, DatabaseModule, OutboxMessageRepositoryToken],
+  exports: [ConfigService, DrizzleModule, OutboxMessageRepositoryToken],
 })
 export class SharedKernelModule {}

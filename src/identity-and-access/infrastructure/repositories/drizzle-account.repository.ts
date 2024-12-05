@@ -3,9 +3,9 @@ import type { AccountRepository } from "@identity-and-access/domain/account/repo
 import {
   accountSchema,
   type IdentityAndAccessDatabase,
-} from "@identity-and-access/infrastructure/database/drizzle/schema.js";
+} from "@identity-and-access/infrastructure/drizzle/schema.js";
 import { Inject, Injectable } from "@nestjs/common";
-import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/database/drizzle/constants.js";
+import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/drizzle/constants.js";
 import { count, eq } from "drizzle-orm";
 
 @Injectable()
