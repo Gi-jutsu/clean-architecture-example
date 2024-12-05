@@ -4,7 +4,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { EventEmitter2, EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
-import { EventEmitterServiceToken } from "./domain/event-emitter.service.js";
+import { EventEmitterToken } from "./domain/event-emitter.interface.js";
 import { OutboxMessageRepositoryToken } from "./domain/outbox-message/repository.js";
 import { DatabaseModule } from "./infrastructure/database/database.module.js";
 import { HttpLoggerInterceptor } from "./infrastructure/http-logger.interceptor.js";
@@ -50,7 +50,7 @@ const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
       useClass: DrizzleOutboxMessageRepository,
     },
     {
-      provide: EventEmitterServiceToken,
+      provide: EventEmitterToken,
       useValue: (await import("@nestjs/event-emitter")).EventEmitter2,
     },
     {
@@ -61,7 +61,7 @@ const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
     {
       provide: ProcessOutboxMessagesUseCase,
       useFactory: createFactoryFromConstructor(ProcessOutboxMessagesUseCase),
-      inject: [EventEmitter2, OutboxMessageRepositoryToken],
+      inject: [OutboxMessageRepositoryToken, EventEmitter2],
     },
   ],
   exports: [ConfigService, DatabaseModule, OutboxMessageRepositoryToken],

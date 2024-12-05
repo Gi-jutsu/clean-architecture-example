@@ -1,10 +1,10 @@
-import type { EventEmitterService } from "@shared-kernel/domain/event-emitter.service.js";
+import type { EventEmitter } from "@shared-kernel/domain/event-emitter.interface.js";
 import type { OutboxMessageRepository } from "@shared-kernel/domain/outbox-message/repository.js";
 
 export class ProcessOutboxMessagesUseCase {
   constructor(
-    private readonly allDomainEvents: EventEmitterService,
-    private readonly allOutboxMessages: OutboxMessageRepository
+    private readonly allOutboxMessages: OutboxMessageRepository,
+    private readonly eventEmitter: EventEmitter
   ) {}
 
   async execute() {
@@ -14,7 +14,7 @@ export class ProcessOutboxMessagesUseCase {
       const { eventType, payload } = message.properties;
 
       try {
-        await this.allDomainEvents.emitAsync(eventType, payload);
+        await this.eventEmitter.emitAsync(eventType, payload);
         message.process();
       } catch (error) {
         message.fail(error.message);

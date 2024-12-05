@@ -1,10 +1,10 @@
-import type { EventEmitterService } from "@shared-kernel/domain/event-emitter.service.js";
+import type { EventEmitter } from "@shared-kernel/domain/event-emitter.interface.js";
 import { InMemoryOutboxMessageRepository } from "@shared-kernel/infrastructure/repositories/in-memory-outbox-message.repository.js";
 import { DateTime, Settings } from "luxon";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { ProcessOutboxMessagesUseCase } from "./use-case.js";
 
-class MockEventEmitterService implements EventEmitterService {
+class MockEventEmitter implements EventEmitter {
   emittedEvents: { event: string; values: any[] }[] = [];
   shouldThrowError = false;
   errorMessage: string = "An error occurred";
@@ -152,11 +152,11 @@ describe("ProcessOutboxMessagesUseCase", () => {
 
 function createSystemUnderTest() {
   const allOutboxMessages = new InMemoryOutboxMessageRepository();
-  const mockedEventEmitter = new MockEventEmitterService();
+  const mockedEventEmitter = new MockEventEmitter();
 
   const useCase = new ProcessOutboxMessagesUseCase(
-    mockedEventEmitter,
-    allOutboxMessages
+    allOutboxMessages,
+    mockedEventEmitter
   );
 
   return { allOutboxMessages, mockedEventEmitter, useCase };
