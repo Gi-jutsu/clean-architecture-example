@@ -2,16 +2,10 @@ import { ResourceAlreadyExistsError } from "@core/errors/resource-already-exists
 import { FakePasswordHasher } from "@identity-and-access/infrastructure/fake-password-hasher.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
 import { DateTime, Settings } from "luxon";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { SignUpWithCredentialsUseCase } from "./use-case.js";
 
 describe("SignUpWithCredentialsUseCase", () => {
-  const allAccounts = new InMemoryAccountRepository();
-  const useCase = new SignUpWithCredentialsUseCase(
-    allAccounts,
-    new FakePasswordHasher()
-  );
-
   beforeAll(() => {
     Settings.now = () => new Date(0).getMilliseconds();
   });
@@ -20,12 +14,10 @@ describe("SignUpWithCredentialsUseCase", () => {
     Settings.now = () => Date.now();
   });
 
-  afterEach(() => {
-    allAccounts.snapshots.clear();
-  });
-
   it("should throw a ResourceAlreadyExists when the email is already taken", async () => {
     // Given
+    const { allAccounts, useCase } = createSystemUnderTest();
+
     const account = {
       email: "dylan@call-me-dev.com",
       id: "1",
@@ -60,6 +52,8 @@ describe("SignUpWithCredentialsUseCase", () => {
 
   it("should create an account with a hashed password", async () => {
     // Given
+    const { allAccounts, useCase } = createSystemUnderTest();
+
     const credentials = {
       email: "dylan@call-me-dev.com",
       password: "password",
@@ -78,3 +72,15 @@ describe("SignUpWithCredentialsUseCase", () => {
     ]);
   });
 });
+
+function createSystemUnderTest() {
+  const allAccounts = new InMemoryAccountRepository();
+  const fakePasswordHasher = new FakePasswordHasher();
+
+  const useCase = new SignUpWithCredentialsUseCase(
+    allAccounts,
+    fakePasswordHasher
+  );
+
+  return { allAccounts, fakePasswordHasher, useCase };
+}

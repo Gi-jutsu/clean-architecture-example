@@ -2,19 +2,10 @@ import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/r
 import { InMemoryPasswordResetRequestRepository } from "@identity-and-access/infrastructure/repositories/in-memory-password-reset-request.repository.js";
 import { InMemoryOutboxMessageRepository } from "@shared-kernel/infrastructure/repositories/in-memory-outbox-message.repository.js";
 import { DateTime, Settings } from "luxon";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { ForgotPasswordUseCase } from "./use-case.js";
 
 describe("ForgotPasswordUseCase", () => {
-  const allAccounts = new InMemoryAccountRepository();
-  const allPasswordResetRequests = new InMemoryPasswordResetRequestRepository();
-  const allOutboxMessages = new InMemoryOutboxMessageRepository();
-  const useCase = new ForgotPasswordUseCase(
-    allAccounts,
-    allPasswordResetRequests,
-    allOutboxMessages
-  );
-
   beforeAll(() => {
     Settings.now = () => new Date(0).getMilliseconds();
   });
@@ -23,14 +14,10 @@ describe("ForgotPasswordUseCase", () => {
     Settings.now = () => Date.now();
   });
 
-  beforeEach(() => {
-    allAccounts.snapshots.clear();
-    allPasswordResetRequests.snapshots.clear();
-    allOutboxMessages.snapshots.clear();
-  });
-
   it("should throw an error when attempting to reset password for an unregistered email address", async () => {
     // Given
+    const { useCase } = createSystemUnderTest();
+
     const email = "non-registered@call-me-dev.com";
 
     // When
@@ -54,6 +41,9 @@ describe("ForgotPasswordUseCase", () => {
 
   it("should initiate the password reset process for an existing account", async () => {
     // Given
+    const { allAccounts, allPasswordResetRequests, useCase } =
+      createSystemUnderTest();
+
     const account = {
       email: "registered@call-me-dev.com",
       id: "1",
@@ -81,6 +71,9 @@ describe("ForgotPasswordUseCase", () => {
   // @TODO: Later on we should refresh the password reset request token and expiration date and send a new email
   it("should return the same password reset request when the password reset process has already been initiated", async () => {
     // Given
+    const { allAccounts, allPasswordResetRequests, useCase } =
+      createSystemUnderTest();
+
     const account = {
       email: "registered@call-me-dev.com",
       id: "1",
@@ -113,6 +106,8 @@ describe("ForgotPasswordUseCase", () => {
 
   it("should save a PasswordResetRequestedDomainEvent to the outbox upon successfully requesting a password reset", async () => {
     // Given
+    const { allAccounts, allOutboxMessages, useCase } = createSystemUnderTest();
+
     const account = {
       email: "registered@call-me-dev.com",
       id: "1",
@@ -143,3 +138,17 @@ describe("ForgotPasswordUseCase", () => {
     ]);
   });
 });
+
+function createSystemUnderTest() {
+  const allAccounts = new InMemoryAccountRepository();
+  const allPasswordResetRequests = new InMemoryPasswordResetRequestRepository();
+  const allOutboxMessages = new InMemoryOutboxMessageRepository();
+
+  const useCase = new ForgotPasswordUseCase(
+    allAccounts,
+    allPasswordResetRequests,
+    allOutboxMessages
+  );
+
+  return { allAccounts, allPasswordResetRequests, allOutboxMessages, useCase };
+}
