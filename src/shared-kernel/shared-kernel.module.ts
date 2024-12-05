@@ -20,14 +20,14 @@ const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
 @Global()
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     DrizzleModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         connectionString: config.getOrThrow("DATABASE_URL"),
       }),
     }),
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({ global: true }),
     ThrottlerModule.forRoot([
       {
         ttl: ONE_MINUTE_IN_MILLISECONDS,
@@ -37,7 +37,6 @@ const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
   ],
   controllers: [HealthCheckHttpController],
   providers: [
-    ConfigService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
@@ -69,6 +68,6 @@ const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
       inject: [OutboxMessageRepositoryToken, EventEmitter2],
     },
   ],
-  exports: [ConfigService, DrizzleModule, OutboxMessageRepositoryToken],
+  exports: [DrizzleModule, OutboxMessageRepositoryToken],
 })
 export class SharedKernelModule {}
