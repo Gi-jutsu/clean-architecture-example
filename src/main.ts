@@ -1,11 +1,13 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
 import { fileURLToPath } from "node:url";
 import { ApplicationModule } from "./application.module.js";
 
 export async function bootstrap() {
   const application = await NestFactory.create(ApplicationModule);
+  application.use(helmet());
   application.enableShutdownHooks();
   application.use(cookieParser());
   application.useGlobalPipes(new ValidationPipe());
