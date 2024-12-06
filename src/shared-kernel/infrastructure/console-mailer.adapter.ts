@@ -1,0 +1,18 @@
+import { Logger } from "@nestjs/common";
+import { Mailer } from "@shared-kernel/domain/mailer.interface.js";
+
+export class ConsoleMailer implements Mailer {
+  private readonly logger = new Logger(ConsoleMailer.name);
+
+  async sendEmailWithTemplate(
+    to: string,
+    templateId: string,
+    variables: Record<string, unknown>
+  ): Promise<void> {
+    this.logger.log(
+      `Sending email to ${to} using template ${templateId} with variables: ${JSON.stringify(
+        variables
+      )}`
+    );
+  }
+}
