@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { EventEmitter2, EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { z } from "zod";
 import { EventEmitterToken } from "./domain/event-emitter.interface.js";
 import { OutboxMessageRepositoryToken } from "./domain/outbox-message/repository.js";
 import { DrizzleModule } from "./infrastructure/drizzle/module.js";
@@ -16,11 +17,20 @@ import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-message
 
 const ONE_MINUTE_IN_MILLISECONDS = 60_000;
 const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
+const ENVIRONMENT_VARIABLES_SCHEMA = z.object({
+  API_HTTP_HOST: z.string(),
+  API_HTTP_PORT: z.string(),
+  API_HTTP_SCHEME: z.enum(["http", "https"]),
+  DATABASE_URL: z.string(),
+});
 
 @Global()
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: ENVIRONMENT_VARIABLES_SCHEMA.parse,
+    }),
     DrizzleModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
