@@ -1,5 +1,7 @@
 import { createFactoryFromConstructor } from "@core/create-factory-from-constructor.js";
 import { Module } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { MailerToken } from "@shared-kernel/domain/mailer.interface.js";
 import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-message/repository.js";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
 import { JwtToken } from "./domain/jwt.port.js";
@@ -9,6 +11,8 @@ import { DrizzleAccountRepository } from "./infrastructure/repositories/drizzle-
 import { DrizzlePasswordResetRequestRepository } from "./infrastructure/repositories/drizzle-password-reset-request.repository.js";
 import { ForgotPasswordHttpController } from "./use-cases/forgot-password/http.controller.js";
 import { ForgotPasswordUseCase } from "./use-cases/forgot-password/use-case.js";
+import { SendForgotPasswordEmailDomainEventController } from "./use-cases/send-forgot-password-email/domain-event.controller.js";
+import { SendForgotPasswordEmailUseCase } from "./use-cases/send-forgot-password-email/use-case.js";
 import { SignInWithCredentialsHttpController } from "./use-cases/sign-in-with-credentials/http.controller.js";
 import { SignInWithCredentialsUseCase } from "./use-cases/sign-in-with-credentials/use-case.js";
 import { SignUpWithCredentialsHttpController } from "./use-cases/sign-up-with-credentials/http.controller.js";
@@ -21,6 +25,9 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
     SignUpWithCredentialsHttpController,
   ],
   providers: [
+    /** Domain events controllers */
+    SendForgotPasswordEmailDomainEventController,
+
     /** Repositories */
     {
       provide: AccountRepositoryToken,
@@ -50,6 +57,11 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
         PasswordResetRequestRepositoryToken,
         OutboxMessageRepositoryToken,
       ],
+    },
+    {
+      provide: SendForgotPasswordEmailUseCase,
+      useFactory: createFactoryFromConstructor(SendForgotPasswordEmailUseCase),
+      inject: [ConfigService, MailerToken],
     },
     {
       provide: SignInWithCredentialsUseCase,

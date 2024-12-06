@@ -6,7 +6,9 @@ import { EventEmitter2, EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { z } from "zod";
 import { EventEmitterToken } from "./domain/event-emitter.interface.js";
+import { MailerToken } from "./domain/mailer.interface.js";
 import { OutboxMessageRepositoryToken } from "./domain/outbox-message/repository.js";
+import { ConsoleMailer } from "./infrastructure/console-mailer.adapter.js";
 import { DrizzleModule } from "./infrastructure/drizzle/module.js";
 import { HttpLoggerInterceptor } from "./infrastructure/http-logger.interceptor.js";
 import { MapErrorToRfc9457HttpException } from "./infrastructure/map-error-to-rfc9457-http-exception.interceptor.js";
@@ -18,6 +20,7 @@ import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-message
 const ONE_MINUTE_IN_MILLISECONDS = 60_000;
 const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
 const ENVIRONMENT_VARIABLES_SCHEMA = z.object({
+  API_BASE_URL: z.string(),
   API_HTTP_HOST: z.string(),
   API_HTTP_PORT: z.string(),
   API_HTTP_SCHEME: z.enum(["http", "https"]),
@@ -68,6 +71,10 @@ const ENVIRONMENT_VARIABLES_SCHEMA = z.object({
       useValue: (await import("@nestjs/event-emitter")).EventEmitter2,
     },
     {
+      provide: MailerToken,
+      useClass: ConsoleMailer,
+    },
+    {
       provide: ProcessOutboxMessagesScheduler,
       useFactory: createFactoryFromConstructor(ProcessOutboxMessagesScheduler),
       inject: [ProcessOutboxMessagesUseCase],
@@ -78,6 +85,6 @@ const ENVIRONMENT_VARIABLES_SCHEMA = z.object({
       inject: [OutboxMessageRepositoryToken, EventEmitter2],
     },
   ],
-  exports: [DrizzleModule, OutboxMessageRepositoryToken],
+  exports: [DrizzleModule, MailerToken, OutboxMessageRepositoryToken],
 })
 export class SharedKernelModule {}
