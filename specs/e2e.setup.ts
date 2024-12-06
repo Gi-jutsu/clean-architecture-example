@@ -1,9 +1,11 @@
-import { bootstrapPostgresSqlDatabase } from "./utils/bootstrap-postgres-sql-database.util.js";
+import { bootstrapPostgresSqlContainer } from "./bootstrap-postgres-sql-database.util.js";
 
-const { postgreSqlContainer } = await bootstrapPostgresSqlDatabase();
+let postgreSqlContainer: Awaited<
+  ReturnType<typeof bootstrapPostgresSqlContainer>
+>;
 
 export async function setup() {
-  await bootstrapPostgresSqlDatabase();
+  postgreSqlContainer = await bootstrapPostgresSqlContainer();
 }
 
 export async function teardown() {
