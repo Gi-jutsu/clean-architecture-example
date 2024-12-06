@@ -1,4 +1,5 @@
 import { ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -12,9 +13,10 @@ export async function bootstrap() {
   application.use(cookieParser());
   application.useGlobalPipes(new ValidationPipe());
 
-  const host = process.env.API_HTTP_HOST || "127.0.0.1";
-  const port = process.env.API_HTTP_PORT || "8080";
-  const scheme = process.env.API_HTTP_SCHEME || "http";
+  const config = application.get(ConfigService);
+  const host = config.getOrThrow("API_HTTP_HOST");
+  const port = config.getOrThrow("API_HTTP_PORT");
+  const scheme = config.getOrThrow("API_HTTP_SCHEME");
   const url = `${scheme}://${host}:${port}`;
 
   await application.listen(port, host, () =>
