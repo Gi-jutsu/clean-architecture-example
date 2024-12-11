@@ -8,11 +8,13 @@ export class SendForgotPasswordEmailUseCase {
   ) {}
 
   async execute(command: SendForgotPasswordEmailCommand) {
+    const baseApiUrl = this.config.getOrThrow("API_BASE_URL");
+
     await this.mailer.sendEmailWithTemplate(
       command.account.email,
       "forgot-password",
       {
-        link: `http://localhost:8080/reset-password?token=${command.forgotPasswordRequest.token}`,
+        link: `${baseApiUrl}/reset-password?token=${command.forgotPasswordRequest.token}`,
       }
     );
   }

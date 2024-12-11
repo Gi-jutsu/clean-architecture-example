@@ -3,7 +3,7 @@ import { Settings } from "luxon";
 import { afterAll, beforeAll, describe, expect, it, vitest } from "vitest";
 import { SendForgotPasswordEmailUseCase } from "./use-case.js";
 
-describe("ForgotPasswordUseCase", () => {
+describe("SendForgotPasswordEmailUseCase", () => {
   beforeAll(() => {
     Settings.now = () => new Date(0).getMilliseconds();
   });
