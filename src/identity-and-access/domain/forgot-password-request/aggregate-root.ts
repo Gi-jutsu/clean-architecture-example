@@ -1,6 +1,6 @@
 import { AggregateRoot } from "@core/primitives/aggregate-root.base.js";
 import { DateTime } from "luxon";
-import { PasswordResetRequestedDomainEvent } from "./events/password-reset-requested.domain-event.js";
+import { ForgotPasswordRequestedDomainEvent } from "./events/password-reset-requested.domain-event.js";
 
 interface Properties {
   accountId: string;
@@ -12,10 +12,10 @@ interface CreateProperties {
   accountId: string;
 }
 
-export class PasswordResetRequest extends AggregateRoot<Properties> {
+export class ForgotPasswordRequest extends AggregateRoot<Properties> {
   static create(properties: CreateProperties) {
     const token = Math.random().toString(36).slice(2);
-    const passwordResetRequest = new PasswordResetRequest({
+    const forgotPasswordRequest = new ForgotPasswordRequest({
       properties: {
         accountId: properties.accountId,
         token,
@@ -23,13 +23,12 @@ export class PasswordResetRequest extends AggregateRoot<Properties> {
       },
     });
 
-    passwordResetRequest.commit(
-      new PasswordResetRequestedDomainEvent({
-        aggregateId: passwordResetRequest.id,
-        payload: passwordResetRequest.properties,
+    forgotPasswordRequest.commit(
+      new ForgotPasswordRequestedDomainEvent({
+        payload: forgotPasswordRequest.properties,
       })
     );
 
-    return passwordResetRequest;
+    return forgotPasswordRequest;
   }
 }

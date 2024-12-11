@@ -1,5 +1,5 @@
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
-import { InMemoryPasswordResetRequestRepository } from "@identity-and-access/infrastructure/repositories/in-memory-password-reset-request.repository.js";
+import { InMemoryForgotPasswordRequestRepository } from "@identity-and-access/infrastructure/repositories/in-memory-forgot-password-request.repository.js";
 import { InMemoryOutboxMessageRepository } from "@shared-kernel/infrastructure/repositories/in-memory-outbox-message.repository.js";
 import { DateTime, Settings } from "luxon";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -41,7 +41,7 @@ describe("ForgotPasswordUseCase", () => {
 
   it("should initiate the password reset process for an existing account", async () => {
     // Given
-    const { allAccounts, allPasswordResetRequests, useCase } =
+    const { allAccounts, allForgotPasswordRequests, useCase } =
       createSystemUnderTest();
 
     const account = {
@@ -58,7 +58,7 @@ describe("ForgotPasswordUseCase", () => {
     });
 
     // Then
-    expect([...allPasswordResetRequests.snapshots.values()]).toEqual([
+    expect([...allForgotPasswordRequests.snapshots.values()]).toEqual([
       {
         id: expect.any(String),
         accountId: account.id,
@@ -71,7 +71,7 @@ describe("ForgotPasswordUseCase", () => {
   // @TODO: Later on we should refresh the password reset request token and expiration date and send a new email
   it("should return the same password reset request when the password reset process has already been initiated", async () => {
     // Given
-    const { allAccounts, allPasswordResetRequests, useCase } =
+    const { allAccounts, allForgotPasswordRequests, useCase } =
       createSystemUnderTest();
 
     const account = {
@@ -80,7 +80,7 @@ describe("ForgotPasswordUseCase", () => {
       password: "password",
     };
 
-    const existingPasswordResetRequest = {
+    const existingForgotPasswordRequest = {
       id: "reset-1",
       accountId: account.id,
       expiresAt: DateTime.now().plus({ days: 1 }),
@@ -88,9 +88,9 @@ describe("ForgotPasswordUseCase", () => {
     };
 
     allAccounts.snapshots.set(account.id, account);
-    allPasswordResetRequests.snapshots.set(
-      existingPasswordResetRequest.id,
-      existingPasswordResetRequest
+    allForgotPasswordRequests.snapshots.set(
+      existingForgotPasswordRequest.id,
+      existingForgotPasswordRequest
     );
 
     // When
@@ -99,12 +99,12 @@ describe("ForgotPasswordUseCase", () => {
     });
 
     // Then
-    expect([...allPasswordResetRequests.snapshots.values()]).toEqual([
-      existingPasswordResetRequest,
+    expect([...allForgotPasswordRequests.snapshots.values()]).toEqual([
+      existingForgotPasswordRequest,
     ]);
   });
 
-  it("should save a PasswordResetRequestedDomainEvent to the outbox upon successfully requesting a password reset", async () => {
+  it("should save a ForgotPasswordRequestedDomainEvent to the outbox upon successfully requesting a password reset", async () => {
     // Given
     const { allAccounts, allOutboxMessages, useCase } = createSystemUnderTest();
 
@@ -125,7 +125,7 @@ describe("ForgotPasswordUseCase", () => {
     expect([...allOutboxMessages.snapshots.values()]).toEqual([
       {
         errorMessage: null,
-        eventType: "PasswordResetRequestedDomainEvent",
+        eventType: "ForgotPasswordRequestedDomainEvent",
         id: expect.any(String),
         payload: {
           accountId: "1",
@@ -141,14 +141,15 @@ describe("ForgotPasswordUseCase", () => {
 
 function createSystemUnderTest() {
   const allAccounts = new InMemoryAccountRepository();
-  const allPasswordResetRequests = new InMemoryPasswordResetRequestRepository();
+  const allForgotPasswordRequests =
+    new InMemoryForgotPasswordRequestRepository();
   const allOutboxMessages = new InMemoryOutboxMessageRepository();
 
   const useCase = new ForgotPasswordUseCase(
     allAccounts,
-    allPasswordResetRequests,
+    allForgotPasswordRequests,
     allOutboxMessages
   );
 
-  return { allAccounts, allPasswordResetRequests, allOutboxMessages, useCase };
+  return { allAccounts, allForgotPasswordRequests, allOutboxMessages, useCase };
 }

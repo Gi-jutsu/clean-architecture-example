@@ -62,8 +62,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.password_reset_requests": {
-      "name": "password_reset_requests",
+    "public.forgot_password_requests": {
+      "name": "forgot_password_requests",
       "schema": "",
       "columns": {
         "id": {
@@ -106,8 +106,8 @@
         }
       },
       "indexes": {
-        "uniqueAccountResetRequest": {
-          "name": "uniqueAccountResetRequest",
+        "uniqueAccountForgotPasswordRequest": {
+          "name": "uniqueAccountForgotPasswordRequest",
           "columns": [
             {
               "expression": "account_id",
@@ -123,16 +123,12 @@
         }
       },
       "foreignKeys": {
-        "password_reset_requests_account_id_accounts_id_fk": {
-          "name": "password_reset_requests_account_id_accounts_id_fk",
-          "tableFrom": "password_reset_requests",
+        "forgot_password_requests_account_id_accounts_id_fk": {
+          "name": "forgot_password_requests_account_id_accounts_id_fk",
+          "tableFrom": "forgot_password_requests",
           "tableTo": "accounts",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["account_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

@@ -30,8 +30,8 @@ export const accountSchema = pgTable(
   })
 );
 
-export const passwordResetRequestSchema = pgTable(
-  "password_reset_requests",
+export const ForgotPasswordRequestSchema = pgTable(
+  "forgot_password_requests",
   {
     id: uuid("id")
       .$defaultFn(() => randomUUID())
@@ -46,9 +46,9 @@ export const passwordResetRequestSchema = pgTable(
       .$defaultFn(() => new Date()),
   },
   (table) => ({
-    uniqueAccountResetRequest: uniqueIndex("uniqueAccountResetRequest").on(
-      table.accountId
-    ),
+    uniqueAccountForgotPasswordRequest: uniqueIndex(
+      "idx_unique_account_forgot_password_request"
+    ).on(table.accountId),
   })
 );
 

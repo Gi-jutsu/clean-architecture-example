@@ -12,7 +12,7 @@ export class SendForgotPasswordEmailUseCase {
       command.account.email,
       "forgot-password",
       {
-        link: `http://localhost:8080/reset-password?token=${command.passwordResetRequest.token}`,
+        link: `http://localhost:8080/reset-password?token=${command.forgotPasswordRequest.token}`,
       }
     );
   }
@@ -22,7 +22,7 @@ type SendForgotPasswordEmailCommand = {
   account: {
     email: string;
   };
-  passwordResetRequest: {
+  forgotPasswordRequest: {
     token: string;
   };
 };

@@ -1,7 +1,7 @@
-import type { PasswordResetRequest } from "@identity-and-access/domain/password-reset-request/aggregate-root.js";
-import type { PasswordResetRequestRepository } from "@identity-and-access/domain/password-reset-request/repository.js";
+import type { ForgotPasswordRequest } from "@identity-and-access/domain/forgot-password-request/aggregate-root.js";
+import type { ForgotPasswordRequestRepository } from "@identity-and-access/domain/forgot-password-request/repository.js";
 import {
-  passwordResetRequestSchema,
+  ForgotPasswordRequestSchema,
   type IdentityAndAccessDatabase,
 } from "@identity-and-access/infrastructure/drizzle/schema.js";
 import { Inject, Injectable } from "@nestjs/common";
@@ -9,8 +9,8 @@ import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/drizzle/
 import { count, eq } from "drizzle-orm";
 
 @Injectable()
-export class DrizzlePasswordResetRequestRepository
-  implements PasswordResetRequestRepository
+export class DrizzleForgotPasswordRequestRepository
+  implements ForgotPasswordRequestRepository
 {
   constructor(
     @Inject(DrizzlePostgresPoolToken)
@@ -20,24 +20,24 @@ export class DrizzlePasswordResetRequestRepository
   async hasPendingRequest(accountId: string): Promise<boolean> {
     const results = await this.database
       .select({ count: count() })
-      .from(passwordResetRequestSchema)
-      .where(eq(passwordResetRequestSchema.accountId, accountId))
+      .from(ForgotPasswordRequestSchema)
+      .where(eq(ForgotPasswordRequestSchema.accountId, accountId))
       .execute();
 
     return results[0].count > 0;
   }
 
-  async save(request: PasswordResetRequest): Promise<void> {
+  async save(request: ForgotPasswordRequest): Promise<void> {
     const values = {
       ...request.properties,
       expiresAt: request.properties.expiresAt.toJSDate(),
     };
 
     await this.database
-      .insert(passwordResetRequestSchema)
+      .insert(ForgotPasswordRequestSchema)
       .values(values)
       .onConflictDoUpdate({
-        target: [passwordResetRequestSchema.id],
+        target: [ForgotPasswordRequestSchema.id],
         set: values,
       });
   }

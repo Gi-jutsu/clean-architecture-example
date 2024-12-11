@@ -4,11 +4,11 @@ import { ConfigService } from "@nestjs/config";
 import { MailerToken } from "@shared-kernel/domain/mailer.interface.js";
 import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-message/repository.js";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
+import { ForgotPasswordRequestRepositoryToken } from "./domain/forgot-password-request/repository.js";
 import { JwtToken } from "./domain/jwt.port.js";
 import { PasswordHasherToken } from "./domain/password-hasher.port.js";
-import { PasswordResetRequestRepositoryToken } from "./domain/password-reset-request/repository.js";
 import { DrizzleAccountRepository } from "./infrastructure/repositories/drizzle-account.repository.js";
-import { DrizzlePasswordResetRequestRepository } from "./infrastructure/repositories/drizzle-password-reset-request.repository.js";
+import { DrizzleForgotPasswordRequestRepository } from "./infrastructure/repositories/drizzle-forgot-password-request.repository.js";
 import { ForgotPasswordHttpController } from "./use-cases/forgot-password/http.controller.js";
 import { ForgotPasswordUseCase } from "./use-cases/forgot-password/use-case.js";
 import { SendForgotPasswordEmailDomainEventController } from "./use-cases/send-forgot-password-email/domain-event.controller.js";
@@ -34,8 +34,8 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
       useClass: DrizzleAccountRepository,
     },
     {
-      provide: PasswordResetRequestRepositoryToken,
-      useClass: DrizzlePasswordResetRequestRepository,
+      provide: ForgotPasswordRequestRepositoryToken,
+      useClass: DrizzleForgotPasswordRequestRepository,
     },
 
     /** Ports */
@@ -54,7 +54,7 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
       useFactory: createFactoryFromConstructor(ForgotPasswordUseCase),
       inject: [
         AccountRepositoryToken,
-        PasswordResetRequestRepositoryToken,
+        ForgotPasswordRequestRepositoryToken,
         OutboxMessageRepositoryToken,
       ],
     },

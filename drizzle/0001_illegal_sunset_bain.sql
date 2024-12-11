@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "password_reset_requests" (
+CREATE TABLE IF NOT EXISTS "forgot_password_requests" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"account_id" uuid,
 	"token" varchar(255) NOT NULL,
@@ -8,9 +8,9 @@ CREATE TABLE IF NOT EXISTS "password_reset_requests" (
 );
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "password_reset_requests" ADD CONSTRAINT "password_reset_requests_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."accounts"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "forgot_password_requests" ADD CONSTRAINT "forgot_password_requests_account_id_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."accounts"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
-CREATE UNIQUE INDEX IF NOT EXISTS "uniqueAccountResetRequest" ON "password_reset_requests" USING btree ("account_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "idx_unique_account_forgot_password_request" ON "forgot_password_requests" USING btree ("account_id");

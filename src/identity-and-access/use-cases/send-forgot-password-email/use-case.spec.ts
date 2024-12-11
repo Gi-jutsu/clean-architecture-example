@@ -21,7 +21,7 @@ describe("ForgotPasswordUseCase", () => {
       account: {
         email: "dylan@call-me-dev.com",
       },
-      passwordResetRequest: {
+      forgotPasswordRequest: {
         token: "fake-token",
       },
     });
