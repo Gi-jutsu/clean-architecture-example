@@ -22,15 +22,13 @@ export const outboxMessageSchema = pgTable(
     processedAt: timestamp("processed_at"),
     errorMessage: varchar("error_message"),
   },
-  (table) => {
-    return {
-      idx_outbox_messages_unprocessed: index("idx_outbox_messages_unprocessed")
-        .on(table.occurredAt, table.processedAt)
-        // @FIXME PostgreSQL 'INCLUDE' is not supported by drizzle-orm
-        // @see https://github.com/drizzle-team/drizzle-orm/issues/2972
-        .where(isNull(table.processedAt)),
-    };
-  }
+  (table) => [
+    index("idx_outbox_messages_unprocessed")
+      .on(table.occurredAt, table.processedAt)
+      // @FIXME PostgreSQL 'INCLUDE' is not supported by drizzle-orm
+      // @see https://github.com/drizzle-team/drizzle-orm/issues/2972
+      .where(isNull(table.processedAt)),
+  ]
 );
 
 export type SharedKernelDatabase = NodePgDatabase<{

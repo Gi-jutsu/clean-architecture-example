@@ -23,11 +23,7 @@ export const accountSchema = pgTable(
       .notNull()
       .$defaultFn(() => new Date()),
   },
-  (table) => ({
-    emailUniqueIndex: uniqueIndex("emailUniqueIndex").on(
-      sql`lower(${table.email})`
-    ),
-  })
+  (table) => [uniqueIndex("emailUniqueIndex").on(sql`lower(${table.email})`)]
 );
 
 export const ForgotPasswordRequestSchema = pgTable(
@@ -45,11 +41,11 @@ export const ForgotPasswordRequestSchema = pgTable(
       .notNull()
       .$defaultFn(() => new Date()),
   },
-  (table) => ({
-    uniqueAccountForgotPasswordRequest: uniqueIndex(
-      "idx_unique_account_forgot_password_request"
-    ).on(table.accountId),
-  })
+  (table) => [
+    uniqueIndex("idx_unique_account_forgot_password_request").on(
+      table.accountId
+    ),
+  ]
 );
 
 export type IdentityAndAccessDatabase = NodePgDatabase<{
