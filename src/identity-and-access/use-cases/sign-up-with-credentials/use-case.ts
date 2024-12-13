@@ -1,7 +1,7 @@
 import { ResourceAlreadyExistsError } from "@core/errors/resource-already-exists.error.js";
 import { Account } from "@identity-and-access/domain/account/aggregate-root.js";
 import type { AccountRepository } from "@identity-and-access/domain/account/repository.js";
-import type { PasswordHasher } from "@identity-and-access/domain/password-hasher.port.js";
+import type { PasswordHasher } from "@identity-and-access/domain/ports/password-hasher.port.js";
 
 export class SignUpWithCredentialsUseCase {
   constructor(

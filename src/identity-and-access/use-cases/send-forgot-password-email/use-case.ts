@@ -1,5 +1,5 @@
 import type { ConfigService } from "@nestjs/config";
-import type { Mailer } from "@shared-kernel/domain/mailer.interface.js";
+import type { Mailer } from "@shared-kernel/domain/ports/mailer.port.js";
 
 export class SendForgotPasswordEmailUseCase {
   constructor(

@@ -64,20 +64,22 @@ pnpm dev
 
 ## 📂 Project Structure
 
-```perl
+```bash
 📁 src/
 ├── 📁 core/
-│ ├── 📁 errors/ # Generic error classes
-│ └── 📁 primitives/ # Core building blocks such as AggregateRoot, ...
+│ ├── 📁 errors/ # Base error classes such as ResourceNotFound, etc.
+│ ├── 📁 primitives/ # Building blocks like Entity, etc.
+│ └── 📁 utils/ # Utility functions
 │
 ├── 📁 identity-and-access/
-│ ├── 📁 domain/ # Business logic around identity (e.g. Account, ...)
-│ ├── 📁 infrastructure/ # Adapters implementing interfaces for external systems (e.g. database, JWT, email services, ...)
-│ ├── 📁 use-cases/
+│ ├── 📁 domain/ # Business logic (e.g. Account, ForgotPasswordRequest ...)
+│ ├── 📁 infrastructure/ # Driver adapters (e.g., Jwt, Mailer, etc.)
+│ ├── 📁 use-cases/ # Implements business use cases, connecting ports and domains
 │ └── 📄 identity-and-access.module.ts
 │
 ├── 📁 shared-kernel/
-│ ├── 📁 infrastructure/ # Adapters used across multiple bounded-contexts (e.g. GoogleCloudTasks, ...)
+│ ├── 📁 domain/
+│ ├── 📁 infrastructure/ # Driver adapters used across multiple bounded-contexts (e.g. GoogleCloudTasks, ...)
 │ ├── 📁 use-cases/
 │ └── 📄 shared-kernel.module.ts
 │

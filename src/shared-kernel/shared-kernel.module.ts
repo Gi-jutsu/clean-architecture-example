@@ -1,13 +1,13 @@
-import { createFactoryFromConstructor } from "@core/create-factory-from-constructor.js";
+import { createFactoryFromConstructor } from "@core/utils/create-factory-from-constructor.js";
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { EventEmitter2, EventEmitterModule } from "@nestjs/event-emitter";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { z } from "zod";
-import { EventEmitterToken } from "./domain/event-emitter.interface.js";
-import { MailerToken } from "./domain/mailer.interface.js";
 import { OutboxMessageRepositoryToken } from "./domain/outbox-message/repository.js";
+import { EventEmitterToken } from "./domain/ports/event-emitter.port.js";
+import { MailerToken } from "./domain/ports/mailer.port.js";
 import { ConsoleMailer } from "./infrastructure/console-mailer.adapter.js";
 import { DrizzleModule } from "./infrastructure/drizzle/module.js";
 import { HttpLoggerInterceptor } from "./infrastructure/http-logger.interceptor.js";

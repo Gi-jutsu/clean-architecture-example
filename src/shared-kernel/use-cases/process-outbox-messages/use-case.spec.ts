@@ -1,4 +1,4 @@
-import type { EventEmitter } from "@shared-kernel/domain/event-emitter.interface.js";
+import type { EventEmitter } from "@shared-kernel/domain/ports/event-emitter.port.js";
 import { InMemoryOutboxMessageRepository } from "@shared-kernel/infrastructure/repositories/in-memory-outbox-message.repository.js";
 import { DateTime, Settings } from "luxon";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";

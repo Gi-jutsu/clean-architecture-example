@@ -1,12 +1,12 @@
-import { createFactoryFromConstructor } from "@core/create-factory-from-constructor.js";
+import { createFactoryFromConstructor } from "@core/utils/create-factory-from-constructor.js";
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { MailerToken } from "@shared-kernel/domain/mailer.interface.js";
 import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-message/repository.js";
+import { MailerToken } from "@shared-kernel/domain/ports/mailer.port.js";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
 import { ForgotPasswordRequestRepositoryToken } from "./domain/forgot-password-request/repository.js";
-import { JwtToken } from "./domain/jwt.port.js";
-import { PasswordHasherToken } from "./domain/password-hasher.port.js";
+import { JwtToken } from "./domain/ports/jwt.port.js";
+import { PasswordHasherToken } from "./domain/ports/password-hasher.port.js";
 import { DrizzleAccountRepository } from "./infrastructure/repositories/drizzle-account.repository.js";
 import { DrizzleForgotPasswordRequestRepository } from "./infrastructure/repositories/drizzle-forgot-password-request.repository.js";
 import { ForgotPasswordHttpController } from "./use-cases/forgot-password/http.controller.js";
