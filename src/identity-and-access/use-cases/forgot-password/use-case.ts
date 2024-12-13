@@ -44,7 +44,7 @@ export class ForgotPasswordUseCase {
     request: ForgotPasswordRequest
   ) {
     const events = request.pullDomainEvents();
-    const messages = events.map(OutboxMessage.createFromDomainEvent);
+    const messages = events.map(OutboxMessage.fromDomainEvent);
 
     await this.allOutboxMessages.save(messages);
   }

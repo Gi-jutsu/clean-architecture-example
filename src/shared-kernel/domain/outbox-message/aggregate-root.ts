@@ -10,7 +10,7 @@ interface Properties {
 }
 
 export class OutboxMessage extends Entity<Properties> {
-  static createFromDomainEvent(event: DomainEvent) {
+  static fromDomainEvent(event: DomainEvent) {
     return new OutboxMessage({
       properties: {
         eventType: event.type,
