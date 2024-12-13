@@ -9,7 +9,7 @@ class MockEventEmitter implements EventEmitter {
   shouldThrowError = false;
   errorMessage: string = "An error occurred";
 
-  async emitAsync(event: string, ...values: any[]): Promise<void> {
+  async emitAsync(event: string, ...values: any[]) {
     if (this.shouldThrowError) {
       throw new Error(this.errorMessage);
     }

@@ -8,7 +8,7 @@ export class ConsoleMailer implements Mailer {
     to: string,
     templateId: string,
     variables: Record<string, unknown>
-  ): Promise<void> {
+  ) {
     this.logger.log(
       `Sending email to ${to} using template ${templateId} with variables: ${JSON.stringify(
         variables

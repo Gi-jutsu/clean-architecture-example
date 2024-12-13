@@ -30,7 +30,7 @@ export class DrizzleAccountRepository implements AccountRepository {
     });
   }
 
-  async isEmailTaken(email: string): Promise<boolean> {
+  async isEmailTaken(email: string) {
     const [record] = await this.database
       .select({
         count: count(),
@@ -42,7 +42,7 @@ export class DrizzleAccountRepository implements AccountRepository {
     return record.count > 0;
   }
 
-  async save(account: Account): Promise<void> {
+  async save(account: Account) {
     await this.database
       .insert(accountSchema)
       .values(account.properties)

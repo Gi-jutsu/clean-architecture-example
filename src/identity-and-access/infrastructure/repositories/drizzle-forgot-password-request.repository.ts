@@ -17,7 +17,7 @@ export class DrizzleForgotPasswordRequestRepository
     private readonly database: IdentityAndAccessDatabase
   ) {}
 
-  async hasPendingRequest(accountId: string): Promise<boolean> {
+  async hasPendingRequest(accountId: string) {
     const results = await this.database
       .select({ count: count() })
       .from(ForgotPasswordRequestSchema)
@@ -27,7 +27,7 @@ export class DrizzleForgotPasswordRequestRepository
     return results[0].count > 0;
   }
 
-  async save(request: ForgotPasswordRequest): Promise<void> {
+  async save(request: ForgotPasswordRequest) {
     const values = {
       ...request.properties,
       expiresAt: request.properties.expiresAt.toJSDate(),

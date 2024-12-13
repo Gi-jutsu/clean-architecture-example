@@ -16,7 +16,7 @@ export class DrizzleOutboxMessageRepository implements OutboxMessageRepository {
     private readonly database: SharedKernelDatabase
   ) {}
 
-  async findUnprocessedMessages(): Promise<OutboxMessage[]> {
+  async findUnprocessedMessages() {
     const snapshots = await this.database
       .select()
       .from(outboxMessageSchema)

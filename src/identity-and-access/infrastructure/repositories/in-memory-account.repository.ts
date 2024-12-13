@@ -4,7 +4,7 @@ import type { AccountRepository } from "@identity-and-access/domain/account/repo
 export class InMemoryAccountRepository implements AccountRepository {
   snapshots = new Map();
 
-  async findByEmail(email: string): Promise<Account | null> {
+  async findByEmail(email: string) {
     for (const [id, properties] of this.snapshots.entries()) {
       if (properties.email !== email) continue;
 
@@ -17,13 +17,13 @@ export class InMemoryAccountRepository implements AccountRepository {
     return null;
   }
 
-  async isEmailTaken(email: string): Promise<boolean> {
+  async isEmailTaken(email: string) {
     return Array.from(this.snapshots.values()).some(
       (properties) => properties.email === email
     );
   }
 
-  async save(account: Account): Promise<void> {
+  async save(account: Account) {
     this.snapshots.set(account.id, account.properties);
   }
 }

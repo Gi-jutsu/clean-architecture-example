@@ -6,13 +6,13 @@ export class InMemoryForgotPasswordRequestRepository
 {
   snapshots = new Map();
 
-  async hasPendingRequest(accountId: string): Promise<boolean> {
+  async hasPendingRequest(accountId: string) {
     return [...this.snapshots.values()].some(
       (request) => request.accountId === accountId
     );
   }
 
-  async save(request: ForgotPasswordRequest): Promise<void> {
+  async save(request: ForgotPasswordRequest) {
     this.snapshots.set(request.id, request.properties);
   }
 }

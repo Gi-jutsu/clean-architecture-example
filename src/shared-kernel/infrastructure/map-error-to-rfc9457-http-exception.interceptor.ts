@@ -13,20 +13,20 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { DateTime } from "luxon";
-import { Observable, throwError } from "rxjs";
+import { throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 @Injectable()
 export class MapErrorToRfc9457HttpException implements NestInterceptor {
   private readonly logger = new Logger(MapErrorToRfc9457HttpException.name);
 
-  intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_context: ExecutionContext, next: CallHandler) {
     return next
       .handle()
       .pipe(catchError((error) => this.throwAsHttpException(error)));
   }
 
-  private throwAsHttpException(error: unknown): Observable<never> {
+  private throwAsHttpException(error: unknown) {
     this.logger.error(error);
 
     // @TODO: Map ValidationErrors to RFC9457
