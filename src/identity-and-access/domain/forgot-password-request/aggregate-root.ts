@@ -1,6 +1,6 @@
 import { AggregateRoot } from "@core/primitives/aggregate-root.base.js";
 import { DateTime } from "luxon";
-import { ForgotPasswordRequestedDomainEvent } from "./events/password-reset-requested.domain-event.js";
+import { ForgotPasswordRequestCreatedDomainEvent } from "./events/forgot-password-request-created.domain-event.js";
 
 interface Properties {
   accountId: string;
@@ -24,7 +24,7 @@ export class ForgotPasswordRequest extends AggregateRoot<Properties> {
     });
 
     forgotPasswordRequest.commit(
-      new ForgotPasswordRequestedDomainEvent({
+      new ForgotPasswordRequestCreatedDomainEvent({
         payload: forgotPasswordRequest.properties,
       })
     );

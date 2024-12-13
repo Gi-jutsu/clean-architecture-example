@@ -1,4 +1,4 @@
-import { ForgotPasswordRequestedDomainEvent } from "@identity-and-access/domain/forgot-password-request/events/password-reset-requested.domain-event.js";
+import { ForgotPasswordRequestCreatedDomainEvent } from "@identity-and-access/domain/forgot-password-request/events/forgot-password-request-created.domain-event.js";
 import { Injectable } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
 import { SendForgotPasswordEmailUseCase } from "./use-case.js";
@@ -7,8 +7,8 @@ import { SendForgotPasswordEmailUseCase } from "./use-case.js";
 export class SendForgotPasswordEmailDomainEventController {
   constructor(private readonly useCase: SendForgotPasswordEmailUseCase) {}
 
-  @OnEvent(ForgotPasswordRequestedDomainEvent.name)
-  async handle(payload: ForgotPasswordRequestedDomainEvent["payload"]) {
+  @OnEvent(ForgotPasswordRequestCreatedDomainEvent.name)
+  async handle(payload: ForgotPasswordRequestCreatedDomainEvent["payload"]) {
     await this.useCase.execute({
       account: {
         email: payload.accountId,

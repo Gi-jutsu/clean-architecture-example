@@ -104,7 +104,7 @@ describe("ForgotPasswordUseCase", () => {
     ]);
   });
 
-  it("should save a ForgotPasswordRequestedDomainEvent to the outbox upon successfully requesting a password reset", async () => {
+  it("should save a ForgotPasswordRequestCreatedDomainEvent to the outbox upon successfully requesting a password reset", async () => {
     // Given
     const { allAccounts, allOutboxMessages, useCase } = createSystemUnderTest();
 
@@ -125,7 +125,7 @@ describe("ForgotPasswordUseCase", () => {
     expect([...allOutboxMessages.snapshots.values()]).toEqual([
       {
         errorMessage: null,
-        eventType: "ForgotPasswordRequestedDomainEvent",
+        eventType: "ForgotPasswordRequestCreatedDomainEvent",
         id: expect.any(String),
         payload: {
           accountId: "1",
