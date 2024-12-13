@@ -3,7 +3,7 @@
   "scripts": {
     "build": "swc ./src --ignore **/*.spec.ts --out-dir ./build --strip-leading-paths",
     "build:watch": "pnpm build --watch",
-    "dev": "concurrently -n API,BUILD \"pnpm start:watch\" \"pnpm build:watch\"",
+    "dev": "concurrently --raw -n API,BUILD,TYPESCRIPT \"pnpm start:watch\" \"pnpm build:watch\" \"tsc --noEmit --watch\"",
     "start": "node ./build/main.js",
     "start:watch": "chokidar --silent './build/**/*.js' '.env' -c 'kill-port 8080 && pnpm start'",
     "test": "vitest",
@@ -28,6 +28,7 @@
     "kill-port": "^2.0.1",
     "supertest": "^7.0.0",
     "testcontainers": "^10.15.0",
+    "typescript": "^5.7.2",
     "unplugin-swc": "^1.5.1",
     "vite-tsconfig-paths": "^5.1.3",
     "vitest": "^2.1.6"
