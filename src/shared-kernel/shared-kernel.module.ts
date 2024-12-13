@@ -19,13 +19,17 @@ import { ProcessOutboxMessagesUseCase } from "./use-cases/process-outbox-message
 
 const ONE_MINUTE_IN_MILLISECONDS = 60_000;
 const MAXIMUM_NUMBER_OF_REQUESTS_PER_MINUTE = 100;
-const ENVIRONMENT_VARIABLES_SCHEMA = z.object({
-  API_BASE_URL: z.string(),
-  API_HTTP_HOST: z.string(),
-  API_HTTP_PORT: z.string(),
-  API_HTTP_SCHEME: z.enum(["http", "https"]),
-  DATABASE_URL: z.string(),
-});
+const ENVIRONMENT_VARIABLES_SCHEMA = z
+  .object({
+    API_HTTP_HOST: z.string(),
+    API_HTTP_PORT: z.string(),
+    API_HTTP_SCHEME: z.enum(["http", "https"]),
+    DATABASE_URL: z.string(),
+  })
+  .transform((data) => ({
+    ...data,
+    API_BASE_URL: `${data.API_HTTP_SCHEME}://${data.API_HTTP_HOST}:${data.API_HTTP_PORT}`,
+  }));
 
 @Global()
 @Module({

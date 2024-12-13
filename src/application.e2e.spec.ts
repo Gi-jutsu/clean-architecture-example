@@ -15,7 +15,7 @@ describe("ApplicationModule", () => {
   });
 
   describe("Rate Limiting", () => {
-    it("should return 429 after exceeding rate limit", async () => {
+    it("should return 429 after exceeding rate limit (100 requests per minute)", async () => {
       const client = supertest(server);
       const maximumNumberOfRequestsPerMinute = 100;
 

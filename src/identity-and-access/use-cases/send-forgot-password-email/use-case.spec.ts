@@ -31,7 +31,7 @@ describe("SendForgotPasswordEmailUseCase", () => {
       "dylan@call-me-dev.com",
       "forgot-password",
       {
-        link: "http://localhost:8080/reset-password?token=fake-token",
+        link: "http://127.0.0.1:8080/reset-password?token=fake-token",
       }
     );
   });
@@ -40,7 +40,7 @@ describe("SendForgotPasswordEmailUseCase", () => {
 function createSystemUnderTest() {
   const fakeConfig = new ConfigService();
   fakeConfig.getOrThrow = (key: string) => {
-    if (key === "API_BASE_URL") return "http://localhost:8080";
+    if (key === "API_BASE_URL") return "http://127.0.0.1:8080";
     throw new Error(`Key ${key} not found`);
   };
 
