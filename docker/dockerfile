@@ -1,5 +1,7 @@
 FROM node:22-alpine as base
 
+RUN addgroup -S app_group && adduser -S app_user -G app_group
+
 WORKDIR /opt/backend
 COPY package.json pnpm-lock.yaml ./
 
@@ -20,5 +22,7 @@ RUN pnpm build
 FROM base AS release
 COPY --from=builder /opt/backend/production_node_modules ./node_modules
 COPY --from=builder /opt/backend/build ./build
+
+USER app_user
 
 CMD ["node", "build/main.js"]
