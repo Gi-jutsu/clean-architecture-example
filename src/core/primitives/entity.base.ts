@@ -25,7 +25,7 @@ export abstract class Entity<
   static hydrate<Constructor extends new (...args: any) => any>(
     this: Constructor,
     ...args: ConstructorParameters<Constructor>
-  ) {
+  ): InstanceType<Constructor> {
     return new this(...args);
   }
 
