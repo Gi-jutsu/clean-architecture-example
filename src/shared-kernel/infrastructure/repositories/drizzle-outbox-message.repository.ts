@@ -27,16 +27,11 @@ export class DrizzleOutboxMessageRepository implements OutboxMessageRepository {
         )
       );
 
-    return snapshots.map((snapshot) =>
-      OutboxMessage.hydrate({
-        id: snapshot.id,
-        properties: snapshot,
-      })
-    );
+    return snapshots.map((s) => OutboxMessage.fromSnapshot(s));
   }
 
   async save(messages: OutboxMessage[]) {
-    const snapshots = messages.map((message) => message.properties);
+    const snapshots = messages.map((message) => message.snapshot());
 
     await this.database
       .insert(outboxMessageSchema)

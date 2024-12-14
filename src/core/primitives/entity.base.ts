@@ -22,11 +22,13 @@ export abstract class Entity<
     this._properties = properties;
   }
 
-  static hydrate<Constructor extends new (...args: any) => any>(
+  static fromSnapshot<Constructor extends new (...args: any) => any>(
     this: Constructor,
-    ...args: ConstructorParameters<Constructor>
+    snapshot: InstanceType<Constructor>["_properties"] & EntityProperties
   ): InstanceType<Constructor> {
-    return new this(...args);
+    const { id, ...properties } = snapshot;
+
+    return new this({ id, properties });
   }
 
   get properties() {
@@ -34,5 +36,10 @@ export abstract class Entity<
       id: this.id,
       ...this._properties,
     });
+  }
+
+  snapshot() {
+    const snapshot = { ...this._properties };
+    return snapshot;
   }
 }

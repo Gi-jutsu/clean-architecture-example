@@ -10,9 +10,11 @@ export class InMemoryForgotPasswordRequestRepository
     for (const [id, properties] of this.snapshots.entries()) {
       if (properties.accountId !== accountId) continue;
 
-      return ForgotPasswordRequest.hydrate({
-        properties,
+      return ForgotPasswordRequest.fromSnapshot({
         id,
+        accountId: properties.accountId,
+        expiresAt: properties.expiresAt,
+        token: properties,
       });
     }
 

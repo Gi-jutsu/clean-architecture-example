@@ -77,20 +77,17 @@ describe("ForgotPasswordUseCase", () => {
 
     // @todo(dev-ux): impl Object Mother
     // @see https://martinfowler.com/bliki/ObjectMother.html
-    const account = Account.hydrate({
-      properties: {
-        email: "user@example.com",
-        password: "hashed-password",
-      },
+    const account = Account.fromSnapshot({
+      email: "user@example.com",
+      password: "hashed-password",
       id: "account-1",
     });
 
-    const request = ForgotPasswordRequest.hydrate({
-      properties: {
-        accountId: account.id,
-        expiresAt: DateTime.now().plus({ days: 1 }),
-        token: "token",
-      },
+    const request = ForgotPasswordRequest.fromSnapshot({
+      accountId: account.id,
+      expiresAt: DateTime.now().plus({ days: 1 }),
+      id: "request-1",
+      token: "token",
     });
 
     allAccounts.snapshots.set(account.id, account.properties);

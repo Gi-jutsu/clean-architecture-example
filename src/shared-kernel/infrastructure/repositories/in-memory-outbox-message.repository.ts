@@ -11,10 +11,8 @@ export class InMemoryOutboxMessageRepository
 
   async findUnprocessedMessages() {
     return Array.from(this.snapshots.values())
-      .filter((snapshot) => snapshot.processedAt === null)
-      .map((snapshot) =>
-        OutboxMessage.hydrate({ id: snapshot.id, properties: { ...snapshot } })
-      );
+      .filter((s) => s.processedAt === null)
+      .map((s) => OutboxMessage.fromSnapshot(s));
   }
 
   async save(messages: OutboxMessage[]) {

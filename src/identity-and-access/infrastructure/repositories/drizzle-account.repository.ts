@@ -24,9 +24,10 @@ export class DrizzleAccountRepository implements AccountRepository {
 
     if (!account) return null;
 
-    return Account.hydrate({
-      properties: account,
+    return Account.fromSnapshot({
+      email: account.email,
       id: account.id,
+      password: account.password,
     });
   }
 
@@ -43,12 +44,14 @@ export class DrizzleAccountRepository implements AccountRepository {
   }
 
   async save(account: Account) {
+    const snapshot = account.snapshot();
+
     await this.database
       .insert(accountSchema)
-      .values(account.properties)
+      .values(snapshot)
       .onConflictDoUpdate({
         target: [accountSchema.id],
-        set: account.properties,
+        set: snapshot,
       });
   }
 }

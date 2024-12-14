@@ -8,9 +8,10 @@ export class InMemoryAccountRepository implements AccountRepository {
     for (const [id, properties] of this.snapshots.entries()) {
       if (properties.email !== email) continue;
 
-      return Account.hydrate({
-        properties,
+      return Account.fromSnapshot({
         id,
+        email: properties.email,
+        password: properties.password,
       });
     }
 

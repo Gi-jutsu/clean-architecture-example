@@ -30,28 +30,27 @@ export class DrizzleForgotPasswordRequestRepository
       return null;
     }
 
-    return ForgotPasswordRequest.hydrate({
-      properties: {
-        accountId: record.accountId,
-        token: record.token,
-        expiresAt: DateTime.fromJSDate(record.expiresAt),
-      },
+    return ForgotPasswordRequest.fromSnapshot({
+      accountId: record.accountId,
+      expiresAt: DateTime.fromJSDate(record.expiresAt),
       id: record.id,
+      token: record.token,
     });
   }
 
   async save(request: ForgotPasswordRequest) {
-    const values = {
-      ...request.properties,
+    // @todo(dev-ux): consider getting rid of DateTime when possible to ease the integration with the ORM
+    const snapshotWithJsDate = {
+      ...request.snapshot(),
       expiresAt: request.properties.expiresAt.toJSDate(),
     };
 
     await this.database
       .insert(ForgotPasswordRequestSchema)
-      .values(values)
+      .values(snapshotWithJsDate)
       .onConflictDoUpdate({
         target: [ForgotPasswordRequestSchema.id],
-        set: values,
+        set: snapshotWithJsDate,
       });
   }
 }
