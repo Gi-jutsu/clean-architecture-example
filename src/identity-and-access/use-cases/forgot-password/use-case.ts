@@ -1,4 +1,5 @@
 import { ResourceNotFoundError } from "@core/errors/resource-not-found.error.js";
+import type { Account } from "@identity-and-access/domain/account/aggregate-root.js";
 import type { AccountRepository } from "@identity-and-access/domain/account/repository.js";
 import { ForgotPasswordRequest } from "@identity-and-access/domain/forgot-password-request/aggregate-root.js";
 import type { ForgotPasswordRequestRepository } from "@identity-and-access/domain/forgot-password-request/repository.js";
@@ -13,22 +14,20 @@ export class ForgotPasswordUseCase {
   ) {}
 
   async execute(command: ForgotPasswordCommand) {
-    const account = await this.getAccountByEmail(command.email);
+    const account = await this.findAccountByEmailOrThrow(command.email);
+    const { hasBeenCreated, request } =
+      await this.findOrCreateForgotPasswordRequest(account);
 
-    if (await this.allForgotPasswordRequests.hasPendingRequest(account.id)) {
-      return;
+    if (!hasBeenCreated) {
+      request.refresh();
     }
-
-    const request = ForgotPasswordRequest.create({
-      accountId: account.id,
-    });
 
     // @TODO: Must be done in a SQL Transaction
     await this.allForgotPasswordRequests.save(request);
     await this.saveDomainEventsAsOutboxMessages(request);
   }
 
-  private async getAccountByEmail(email: string) {
+  private async findAccountByEmailOrThrow(email: string) {
     const account = await this.allAccounts.findByEmail(email);
     if (!account) {
       throw new ResourceNotFoundError({
@@ -38,6 +37,21 @@ export class ForgotPasswordUseCase {
       });
     }
     return account;
+  }
+
+  private async findOrCreateForgotPasswordRequest(account: Account) {
+    const existingRequest =
+      await this.allForgotPasswordRequests.findByAccountId(account.id);
+
+    if (existingRequest) {
+      return { hasBeenCreated: false, request: existingRequest };
+    }
+
+    const newRequest = ForgotPasswordRequest.create({
+      accountId: account.id,
+    });
+
+    return { hasBeenCreated: true, request: newRequest };
   }
 
   private async saveDomainEventsAsOutboxMessages(

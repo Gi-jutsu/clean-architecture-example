@@ -1,4 +1,4 @@
-import type { ForgotPasswordRequest } from "@identity-and-access/domain/forgot-password-request/aggregate-root.js";
+import { ForgotPasswordRequest } from "@identity-and-access/domain/forgot-password-request/aggregate-root.js";
 import type { ForgotPasswordRequestRepository } from "@identity-and-access/domain/forgot-password-request/repository.js";
 import {
   ForgotPasswordRequestSchema,
@@ -6,7 +6,8 @@ import {
 } from "@identity-and-access/infrastructure/drizzle/schema.js";
 import { Inject, Injectable } from "@nestjs/common";
 import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/drizzle/constants.js";
-import { count, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+import { DateTime } from "luxon";
 
 @Injectable()
 export class DrizzleForgotPasswordRequestRepository
@@ -17,14 +18,26 @@ export class DrizzleForgotPasswordRequestRepository
     private readonly database: IdentityAndAccessDatabase
   ) {}
 
-  async hasPendingRequest(accountId: string) {
-    const results = await this.database
-      .select({ count: count() })
+  async findByAccountId(accountId: string) {
+    const [record] = await this.database
+      .select()
       .from(ForgotPasswordRequestSchema)
       .where(eq(ForgotPasswordRequestSchema.accountId, accountId))
+      .limit(1)
       .execute();
 
-    return results[0].count > 0;
+    if (!record) {
+      return null;
+    }
+
+    return ForgotPasswordRequest.hydrate({
+      properties: {
+        accountId: record.accountId,
+        token: record.token,
+        expiresAt: DateTime.fromJSDate(record.expiresAt),
+      },
+      id: record.id,
+    });
   }
 
   async save(request: ForgotPasswordRequest) {

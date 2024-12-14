@@ -1,3 +1,5 @@
+import { Account } from "@identity-and-access/domain/account/aggregate-root.js";
+import { ForgotPasswordRequest } from "@identity-and-access/domain/forgot-password-request/aggregate-root.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
 import { InMemoryForgotPasswordRequestRepository } from "@identity-and-access/infrastructure/repositories/in-memory-forgot-password-request.repository.js";
 import { InMemoryOutboxMessageRepository } from "@shared-kernel/infrastructure/repositories/in-memory-outbox-message.repository.js";
@@ -68,39 +70,50 @@ describe("ForgotPasswordUseCase", () => {
     ]);
   });
 
-  // @TODO: Later on we should refresh the password reset request token and expiration date and send a new email
-  it("should return the same password reset request when the password reset process has already been initiated", async () => {
+  it("should refresh the token and expiration date when the password reset process has already been initiated", async () => {
     // Given
     const { allAccounts, allForgotPasswordRequests, useCase } =
       createSystemUnderTest();
 
-    const account = {
-      email: "registered@call-me-dev.com",
-      id: "1",
-      password: "password",
-    };
+    // @todo(dev-ux): impl Object Mother
+    // @see https://martinfowler.com/bliki/ObjectMother.html
+    const account = Account.hydrate({
+      properties: {
+        email: "user@example.com",
+        password: "hashed-password",
+      },
+      id: "account-1",
+    });
 
-    const existingForgotPasswordRequest = {
-      id: "reset-1",
-      accountId: account.id,
-      expiresAt: DateTime.now().plus({ days: 1 }),
-      token: "existing-token",
-    };
+    const request = ForgotPasswordRequest.hydrate({
+      properties: {
+        accountId: account.id,
+        expiresAt: DateTime.now().plus({ days: 1 }),
+        token: "token",
+      },
+    });
 
-    allAccounts.snapshots.set(account.id, account);
-    allForgotPasswordRequests.snapshots.set(
-      existingForgotPasswordRequest.id,
-      existingForgotPasswordRequest
-    );
+    allAccounts.snapshots.set(account.id, account.properties);
+    // @todo(bug): "TypeError: Cannot assign to read only property 'token' of object '#<Object>'"
+    // consider implementing a proper snapshot pattern
+    allForgotPasswordRequests.snapshots.set(request.id, {
+      ...request.properties,
+    });
 
     // When
     await useCase.execute({
-      email: account.email,
+      email: account.properties.email,
     });
 
     // Then
-    expect([...allForgotPasswordRequests.snapshots.values()]).toEqual([
-      existingForgotPasswordRequest,
+    const snapshots = [...allForgotPasswordRequests.snapshots.values()];
+    expect(snapshots).toEqual([
+      {
+        id: request.id,
+        accountId: account.id,
+        expiresAt: DateTime.now().plus({ days: 1 }),
+        token: expect.not.stringMatching(request.properties.token),
+      },
     ]);
   });
 

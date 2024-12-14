@@ -31,4 +31,9 @@ export class ForgotPasswordRequest extends AggregateRoot<Properties> {
 
     return forgotPasswordRequest;
   }
+
+  refresh() {
+    this._properties.token = Math.random().toString(36).slice(2);
+    this._properties.expiresAt = DateTime.now().plus({ days: 1 });
+  }
 }

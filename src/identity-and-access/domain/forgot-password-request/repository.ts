@@ -1,7 +1,7 @@
 import type { ForgotPasswordRequest } from "./aggregate-root.js";
 
 export interface ForgotPasswordRequestRepository {
-  hasPendingRequest: (accountId: string) => Promise<boolean>;
+  findByAccountId: (accountId: string) => Promise<ForgotPasswordRequest | null>;
   save: (request: ForgotPasswordRequest) => Promise<void>;
 }
 
