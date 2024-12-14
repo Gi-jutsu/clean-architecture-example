@@ -32,7 +32,9 @@ export const ForgotPasswordRequestSchema = pgTable(
     id: uuid("id")
       .$defaultFn(() => randomUUID())
       .primaryKey(),
-    accountId: uuid("account_id").references(() => accountSchema.id),
+    accountId: uuid("account_id")
+      .notNull()
+      .references(() => accountSchema.id),
     token: varchar("token", { length: 255 }).notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

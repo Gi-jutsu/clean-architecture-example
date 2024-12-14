@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS "forgot_password_requests" (
 	"id" uuid PRIMARY KEY NOT NULL,
-	"account_id" uuid,
+	"account_id" uuid NOT NULL,
 	"token" varchar(255) NOT NULL,
 	"expires_at" timestamp NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
