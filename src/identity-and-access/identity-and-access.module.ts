@@ -17,14 +17,26 @@ import { SignInWithCredentialsHttpController } from "./use-cases/sign-in-with-cr
 import { SignInWithCredentialsUseCase } from "./use-cases/sign-in-with-credentials/use-case.js";
 import { SignUpWithCredentialsHttpController } from "./use-cases/sign-up-with-credentials/http.controller.js";
 import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentials/use-case.js";
+import { APP_GUARD } from "@nestjs/core";
+import { AuthenticationGuard } from "./infrastructure/guards/authentication.guard.js";
+import { GetLoggedInAccountHttpController } from "./queries/get-logged-in-account/http.controller.js";
 
 @Module({
   controllers: [
+    /** Queries */
+    GetLoggedInAccountHttpController,
+
+    /** Use cases */
     ForgotPasswordHttpController,
     SignInWithCredentialsHttpController,
     SignUpWithCredentialsHttpController,
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthenticationGuard,
+    },
+
     /** Domain events controllers */
     SendForgotPasswordEmailDomainEventController,
 
