@@ -1,9 +1,9 @@
 import { FakePasswordHasher } from "@identity-and-access/infrastructure/fake-password-hasher.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
-import jwt from "jsonwebtoken";
 import { DateTime, Settings } from "luxon";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi, vitest } from "vitest";
 import { SignInWithCredentialsUseCase } from "./use-case.js";
+import { Account } from "@identity-and-access/domain/account/aggregate-root.js";
 
 describe("SignInWithCredentialsUseCase", () => {
   beforeAll(() => {
@@ -65,21 +65,48 @@ describe("SignInWithCredentialsUseCase", () => {
       pointer: "/data/attributes/password",
     });
   });
+
+  it("should return an access token with claims when the credentials are correct", async () => {
+    // Given
+    const { allAccounts, jwt, useCase } = createSystemUnderTest();
+
+    const account = Account.fromSnapshot({
+      email: "dylan@call-me-dev.com",
+      id: "1",
+      password: "hashed-password",
+    });
+
+    allAccounts.snapshots.set(account.id, account.properties);
+
+    // When
+    await useCase.execute({
+      email: "dylan@call-me-dev.com",
+      password: "password",
+    });
+
+    // Then
+    expect(jwt.sign).toHaveBeenNthCalledWith(1, { sub: account.id }, "secret");
+  });
 });
 
 function createSystemUnderTest() {
   const allAccounts = new InMemoryAccountRepository();
-  const fakePasswordHasher = new FakePasswordHasher();
+  const jwt = {
+    sign: vi.fn(),
+    verify: vi.fn(),
+  };
+  const passwordHasher = new FakePasswordHasher();
 
   const useCase = new SignInWithCredentialsUseCase(
     allAccounts,
     jwt,
-    fakePasswordHasher
+    passwordHasher
   );
 
   return {
     allAccounts,
-    fakePasswordHasher,
+    jwt,
+    passwordHasher,
     useCase,
   };
 }
