@@ -85,7 +85,7 @@ describe("SignInWithCredentialsUseCase", () => {
     });
 
     // Then
-    expect(jwt.sign).toHaveBeenNthCalledWith(1, { sub: account.id }, "secret");
+    expect(jwt.sign).toHaveBeenNthCalledWith(1, { sub: account.id });
   });
 });
 

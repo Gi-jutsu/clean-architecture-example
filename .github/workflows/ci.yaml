@@ -45,6 +45,7 @@ jobs:
           echo "API_HTTP_PORT=8080" >> $GITHUB_ENV
           echo "API_HTTP_SCHEME=http" >> $GITHUB_ENV
           echo "DATABASE_URL=postgres://postgres:postgres@localhost:5432/postgres" >> $GITHUB_ENV
+          echo "JWT_SECRET=secret" >> $GITHUB_ENV
 
       - name: Run E2E tests
         run: pnpm test:e2e

@@ -1,13 +1,13 @@
 import { ResourceNotFoundError } from "@core/errors/resource-not-found.error.js";
 import type { AccountRepository } from "@identity-and-access/domain/account/repository.js";
-import type { Jwt } from "@identity-and-access/domain/ports/jwt.port.js";
+import type { JwtService } from "@identity-and-access/domain/ports/jwt-service.port.js";
 import type { PasswordHasher } from "@identity-and-access/domain/ports/password-hasher.port.js";
 import { WrongPasswordError } from "./errors/wrong-password.error.js";
 
 export class SignInWithCredentialsUseCase {
   constructor(
     private readonly allAccounts: AccountRepository,
-    private readonly jwt: Jwt,
+    private readonly jwt: JwtService,
     private readonly passwordHasher: PasswordHasher
   ) {}
 
@@ -32,8 +32,7 @@ export class SignInWithCredentialsUseCase {
     }
 
     return {
-      // @TODO: Retrieve secret from environment variable
-      accessToken: this.jwt.sign({ sub: account.id }, "secret"),
+      accessToken: this.jwt.sign({ sub: account.id }),
     };
   }
 }

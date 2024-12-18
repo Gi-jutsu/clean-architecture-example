@@ -5,7 +5,7 @@ import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-messa
 import { MailerToken } from "@shared-kernel/domain/ports/mailer.port.js";
 import { AccountRepositoryToken } from "./domain/account/repository.js";
 import { ForgotPasswordRequestRepositoryToken } from "./domain/forgot-password-request/repository.js";
-import { JwtToken } from "./domain/ports/jwt.port.js";
+import { JwtServiceToken } from "./domain/ports/jwt-service.port.js";
 import { PasswordHasherToken } from "./domain/ports/password-hasher.port.js";
 import { DrizzleAccountRepository } from "./infrastructure/repositories/drizzle-account.repository.js";
 import { DrizzleForgotPasswordRequestRepository } from "./infrastructure/repositories/drizzle-forgot-password-request.repository.js";
@@ -20,6 +20,7 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
 import { APP_GUARD } from "@nestjs/core";
 import { AuthenticationGuard } from "./infrastructure/guards/authentication.guard.js";
 import { GetLoggedInAccountHttpController } from "./queries/get-logged-in-account/http.controller.js";
+import { sign } from "crypto";
 
 @Module({
   controllers: [
@@ -52,8 +53,16 @@ import { GetLoggedInAccountHttpController } from "./queries/get-logged-in-accoun
 
     /** Ports */
     {
-      provide: JwtToken,
-      useValue: (await import("jsonwebtoken")).default,
+      provide: JwtServiceToken,
+      useFactory: async (config: ConfigService) => {
+        const { sign } = await import("jsonwebtoken");
+
+        const secret = config.getOrThrow("JWT_SECRET");
+        return {
+          sign: (payload: Record<string, unknown>) => sign(payload, secret),
+        };
+      },
+      inject: [ConfigService],
     },
     {
       provide: PasswordHasherToken,
@@ -78,7 +87,7 @@ import { GetLoggedInAccountHttpController } from "./queries/get-logged-in-accoun
     {
       provide: SignInWithCredentialsUseCase,
       useFactory: createFactoryFromConstructor(SignInWithCredentialsUseCase),
-      inject: [AccountRepositoryToken, JwtToken, PasswordHasherToken],
+      inject: [AccountRepositoryToken, JwtServiceToken, PasswordHasherToken],
     },
     {
       provide: SignUpWithCredentialsUseCase,
