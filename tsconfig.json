@@ -13,6 +13,6 @@
     "strictNullChecks": true,
     "target": "ESNext"
   },
-  "include": ["src/**/*.ts"],
+  "include": ["specs/**/*.ts", "src/**/*.ts"],
   "exclude": ["node_modules", "build"]
 }
