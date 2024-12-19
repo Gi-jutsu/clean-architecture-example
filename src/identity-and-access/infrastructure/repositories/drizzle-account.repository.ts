@@ -16,23 +16,19 @@ export class DrizzleAccountRepository implements AccountRepository {
   ) {}
 
   async findByEmail(email: string) {
-    const [account] = await this.database
+    const [snapshot] = await this.database
       .select()
       .from(accountSchema)
       .where(eq(accountSchema.email, email))
       .limit(1);
 
-    if (!account) return null;
+    if (!snapshot) return null;
 
-    return Account.fromSnapshot({
-      email: account.email,
-      id: account.id,
-      password: account.password,
-    });
+    return Account.fromSnapshot(snapshot);
   }
 
   async isEmailTaken(email: string) {
-    const [record] = await this.database
+    const [snapshot] = await this.database
       .select({
         count: count(),
       })
@@ -40,7 +36,7 @@ export class DrizzleAccountRepository implements AccountRepository {
       .where(eq(accountSchema.email, email))
       .limit(1);
 
-    return record.count > 0;
+    return snapshot.count > 0;
   }
 
   async save(account: Account) {

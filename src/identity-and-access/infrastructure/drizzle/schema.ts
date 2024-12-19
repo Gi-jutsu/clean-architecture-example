@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import {
+  boolean,
   pgTable,
   timestamp,
   uniqueIndex,
@@ -16,6 +17,7 @@ export const accountSchema = pgTable(
       .$defaultFn(() => randomUUID())
       .primaryKey(),
     email: varchar("email", { length: 255 }).notNull(),
+    isEmailVerified: boolean("is_email_verified").notNull(),
     password: varchar("password", { length: 255 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")

@@ -20,6 +20,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "is_email_verified": {
+          "name": "is_email_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
         "password": {
           "name": "password",
           "type": "varchar(255)",
@@ -79,7 +85,7 @@
           "name": "account_id",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "token": {
           "name": "token",

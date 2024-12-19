@@ -50,7 +50,7 @@ describe("SignUpWithCredentialsUseCase", () => {
     }
   });
 
-  it("should create an account with a hashed password", async () => {
+  it("should create an unverified account with a hashed password", async () => {
     // Given
     const { allAccounts, useCase } = createSystemUnderTest();
 
@@ -63,10 +63,12 @@ describe("SignUpWithCredentialsUseCase", () => {
     const { account } = await useCase.execute(credentials);
 
     // Then
-    expect([...allAccounts.snapshots.values()]).toEqual([
+    const snapshots = [...allAccounts.snapshots.values()];
+    expect(snapshots).toEqual([
       {
         id: account.id,
         email: credentials.email,
+        isEmailVerified: false,
         password: "hashed-password",
       },
     ]);

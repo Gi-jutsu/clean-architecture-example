@@ -10,8 +10,7 @@ export class InMemoryAccountRepository implements AccountRepository {
 
       return Account.fromSnapshot({
         id,
-        email: properties.email,
-        password: properties.password,
+        ...properties,
       });
     }
 
