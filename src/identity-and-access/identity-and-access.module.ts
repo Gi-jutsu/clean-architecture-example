@@ -1,4 +1,4 @@
-import { createFactoryFromConstructor } from "@core/utils/create-factory-from-constructor.js";
+import { createFactoryFromConstructor } from "@shared-kernel/utils/create-factory-from-constructor.js";
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { OutboxMessageRepositoryToken } from "@shared-kernel/domain/outbox-message/repository.js";
@@ -20,7 +20,6 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
 import { APP_GUARD } from "@nestjs/core";
 import { AuthenticationGuard } from "./infrastructure/guards/authentication.guard.js";
 import { GetLoggedInAccountHttpController } from "./queries/get-logged-in-account/http.controller.js";
-import { sign } from "crypto";
 
 @Module({
   controllers: [

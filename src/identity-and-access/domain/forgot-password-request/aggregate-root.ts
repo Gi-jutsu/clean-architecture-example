@@ -1,4 +1,4 @@
-import { AggregateRoot } from "@core/primitives/aggregate-root.base.js";
+import { AggregateRoot } from "@shared-kernel/domain/primitives/aggregate-root.js";
 import { DateTime } from "luxon";
 import { ForgotPasswordRequestCreatedDomainEvent } from "./events/forgot-password-request-created.domain-event.js";
 

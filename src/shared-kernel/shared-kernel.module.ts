@@ -1,4 +1,4 @@
-import { createFactoryFromConstructor } from "@core/utils/create-factory-from-constructor.js";
+import { createFactoryFromConstructor } from "@shared-kernel/utils/create-factory-from-constructor.js";
 import { Global, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";

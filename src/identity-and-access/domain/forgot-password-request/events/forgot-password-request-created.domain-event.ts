@@ -1,4 +1,4 @@
-import { DomainEvent } from "@core/primitives/domain-event.base.js";
+import { DomainEvent } from "@shared-kernel/domain/primitives/domain-event.js";
 import type { ForgotPasswordRequest } from "@identity-and-access/domain/forgot-password-request/aggregate-root.js";
 
 export class ForgotPasswordRequestCreatedDomainEvent extends DomainEvent<

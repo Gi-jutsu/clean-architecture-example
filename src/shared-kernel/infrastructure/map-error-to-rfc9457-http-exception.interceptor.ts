@@ -1,5 +1,5 @@
-import { ResourceAlreadyExistsError } from "@core/errors/resource-already-exists.error.js";
-import { ResourceNotFoundError } from "@core/errors/resource-not-found.error.js";
+import { ResourceAlreadyExistsError } from "@shared-kernel/domain/errors/resource-already-exists.error.js";
+import { ResourceNotFoundError } from "@shared-kernel/domain/errors/resource-not-found.error.js";
 import {
   BadRequestException,
   CallHandler,

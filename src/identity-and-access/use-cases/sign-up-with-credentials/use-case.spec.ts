@@ -1,4 +1,4 @@
-import { ResourceAlreadyExistsError } from "@core/errors/resource-already-exists.error.js";
+import { ResourceAlreadyExistsError } from "@shared-kernel/domain/errors/resource-already-exists.error.js";
 import { FakePasswordHasher } from "@identity-and-access/infrastructure/fake-password-hasher.js";
 import { InMemoryAccountRepository } from "@identity-and-access/infrastructure/repositories/in-memory-account.repository.js";
 import { DateTime, Settings } from "luxon";

@@ -5,7 +5,7 @@ import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/drizzle/
 import {
   outboxMessageSchema,
   type SharedKernelDatabase,
-} from "@shared-kernel/infrastructure/drizzle/schema.js";
+} from "@shared-kernel/infrastructure/database/drizzle.schema.js";
 import { and, isNull, lte, sql } from "drizzle-orm";
 import { DateTime } from "luxon";
 

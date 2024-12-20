@@ -1,4 +1,4 @@
-import { accountSchema } from "@identity-and-access/infrastructure/drizzle/schema.js";
+import { accountSchema } from "@identity-and-access/infrastructure/database/drizzle.schema.js";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
