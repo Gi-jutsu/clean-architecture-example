@@ -79,6 +79,7 @@ describe("ForgotPasswordUseCase", () => {
     // @see https://martinfowler.com/bliki/ObjectMother.html
     const account = Account.fromSnapshot({
       email: "user@example.com",
+      isEmailVerified: true,
       password: "hashed-password",
       id: "account-1",
     });

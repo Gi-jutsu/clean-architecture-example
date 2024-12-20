@@ -73,6 +73,7 @@ describe("SignInWithCredentialsUseCase", () => {
     const account = Account.fromSnapshot({
       email: "dylan@call-me-dev.com",
       id: "1",
+      isEmailVerified: true,
       password: "hashed-password",
     });
 

@@ -13,7 +13,7 @@ interface CreateProperties {
 }
 
 export class Account extends AggregateRoot<Properties> {
-  static create(properties: Properties) {
+  static create(properties: CreateProperties) {
     const account = new Account({
       properties: {
         ...properties,
