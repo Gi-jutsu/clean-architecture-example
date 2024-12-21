@@ -54,7 +54,7 @@ import { GetLoggedInAccountHttpController } from "./queries/get-logged-in-accoun
     {
       provide: JwtServiceToken,
       useFactory: async (config: ConfigService) => {
-        const { sign, verify } = await import("jsonwebtoken");
+        const { sign, verify } = (await import("jsonwebtoken")).default;
 
         const secret = config.getOrThrow("JWT_SECRET");
 
