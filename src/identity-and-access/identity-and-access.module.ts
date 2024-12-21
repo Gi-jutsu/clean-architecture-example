@@ -20,6 +20,8 @@ import { SignUpWithCredentialsUseCase } from "./use-cases/sign-up-with-credentia
 import { APP_GUARD } from "@nestjs/core";
 import { AuthenticationGuard } from "./infrastructure/guards/authentication.guard.js";
 import { GetLoggedInAccountHttpController } from "./queries/get-logged-in-account/http.controller.js";
+import { GetLoggedInAccountQueryHandler } from "./queries/get-logged-in-account/query-handler.js";
+import { DrizzlePostgresPoolToken } from "@shared-kernel/infrastructure/drizzle/constants.js";
 
 @Module({
   controllers: [
@@ -68,6 +70,13 @@ import { GetLoggedInAccountHttpController } from "./queries/get-logged-in-accoun
     {
       provide: PasswordHasherToken,
       useValue: (await import("bcrypt")).default,
+    },
+
+    /** Query handlers */
+    {
+      provide: GetLoggedInAccountQueryHandler,
+      useFactory: createFactoryFromConstructor(GetLoggedInAccountQueryHandler),
+      inject: [DrizzlePostgresPoolToken],
     },
 
     /** Use cases */

@@ -15,11 +15,17 @@ describe("GetLoggedInAccountHttpController", () => {
   });
 
   describe("GET /auth/me", () => {
-    // @TODO: To be implemented (when authentication guard is ready)
-    it.skip("should return 200 with the logged in account", async () => {
+    it("should return 200 with the logged in account details", async () => {
+      const signInResponse = await supertest(server)
+        .post("/auth/sign-in")
+        .send({
+          email: "dylan@call-me-dev.com",
+          password: "password",
+        });
+
       const response = await supertest(server)
-        .post("/auth/forgot-password")
-        .send({ email: "dylan@call-me-dev.com" });
+        .get("/auth/me")
+        .set("Cookie", signInResponse.headers["set-cookie"]);
 
       expect(response.status).toEqual(200);
       expect(response.body).toEqual({

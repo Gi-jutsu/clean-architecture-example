@@ -27,7 +27,7 @@ export class SignInWithCredentialsHttpController {
       password: body.password,
     });
 
-    response.cookie("access_token", accessToken, {
+    response.cookie("token", accessToken, {
       httpOnly: true,
       sameSite: "strict",
       secure: true,

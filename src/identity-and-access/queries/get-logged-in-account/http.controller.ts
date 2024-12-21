@@ -1,15 +1,16 @@
 import { Controller, Get } from "@nestjs/common";
+import { GetLoggedInAccountQueryHandler } from "./query-handler.js";
+import {
+  type CurrentAccount,
+  GetCurrentAccount,
+} from "@identity-and-access/infrastructure/decorators/get-current-account.decorator.js";
 
 @Controller()
 export class GetLoggedInAccountHttpController {
+  constructor(private readonly queryHandler: GetLoggedInAccountQueryHandler) {}
+
   @Get("/auth/me")
-  handle() {
-    // @TODO: To be implemented (when authentication guard is ready)
-    return {
-      account: {
-        id: "52afc7a5-f0e7-4477-b5c7-249ef34099a1",
-        email: "dylan@call-me-dev.com",
-      },
-    };
+  async handle(@GetCurrentAccount() account: CurrentAccount) {
+    return await this.queryHandler.execute({ account });
   }
 }

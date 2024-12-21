@@ -11,6 +11,7 @@ import {
   JwtServiceToken,
 } from "@identity-and-access/domain/ports/jwt-service.port.js";
 import { z } from "zod";
+import type { CurrentAccount } from "@identity-and-access/infrastructure/decorators/get-current-account.decorator.js";
 
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
@@ -43,6 +44,8 @@ export class AuthenticationGuard implements CanActivate {
     if (!claims) {
       return false;
     }
+
+    request.account = { id: claims.sub } satisfies CurrentAccount;
 
     return true;
   }

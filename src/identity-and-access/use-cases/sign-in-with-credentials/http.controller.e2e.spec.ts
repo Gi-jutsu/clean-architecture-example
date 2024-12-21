@@ -24,7 +24,7 @@ describe("SignInWithCredentialsHttpController", () => {
       expect(response.status).toEqual(204);
       expect(response.headers["set-cookie"][0]).toMatch(
         new RegExp(
-          "access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.[A-Za-z0-9-_]+.[A-Za-z0-9-_]+; Path=/; HttpOnly; Secure; SameSite=Strict"
+          "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.[A-Za-z0-9-_]+.[A-Za-z0-9-_]+; Path=/; HttpOnly; Secure; SameSite=Strict"
         )
       );
     });

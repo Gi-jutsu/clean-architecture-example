@@ -63,6 +63,26 @@ describe("AuthenticationGuard", () => {
     // Then
     expect(isAllowed).toBe(true);
   });
+
+  it("should inject the token claims into the request object", () => {
+    // Given
+    const { context, guard, mockHttpRequest, mockJwtVerify } =
+      createSystemUnderTest();
+
+    mockHttpRequest({ cookies: { token: "valid-token" } });
+    mockJwtVerify({ sub: "account-id" });
+
+    // When
+    guard.canActivate(context);
+
+    // Then
+    const request = context.switchToHttp().getRequest();
+    expect(request).toMatchObject({
+      account: {
+        id: "account-id",
+      },
+    });
+  });
 });
 
 function createSystemUnderTest() {
@@ -101,7 +121,7 @@ function createSystemUnderTest() {
       mockedGetAllAndOverride.mockReturnValueOnce(value),
 
     mockHttpRequest: (request: Partial<Request>) =>
-      mockedGetRequest.mockReturnValueOnce(request),
+      mockedGetRequest.mockReturnValue(request),
 
     mockJwtVerify: (claims: Record<string, unknown>) =>
       mockedJwtVerify.mockReturnValueOnce(claims),
