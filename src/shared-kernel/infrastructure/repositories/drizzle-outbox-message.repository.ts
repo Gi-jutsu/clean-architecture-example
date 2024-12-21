@@ -6,8 +6,7 @@ import {
   outboxMessageSchema,
   type SharedKernelDatabase,
 } from "@shared-kernel/infrastructure/database/drizzle.schema.js";
-import { and, isNull, lte, sql } from "drizzle-orm";
-import { DateTime } from "luxon";
+import { inArray, sql } from "drizzle-orm";
 
 @Injectable()
 export class DrizzleOutboxMessageRepository implements OutboxMessageRepository {
@@ -17,17 +16,38 @@ export class DrizzleOutboxMessageRepository implements OutboxMessageRepository {
   ) {}
 
   async findUnprocessedMessages() {
-    const snapshots = await this.database
-      .select()
-      .from(outboxMessageSchema)
-      .where(
-        and(
-          lte(outboxMessageSchema.occurredAt, DateTime.now().toJSDate()),
-          isNull(outboxMessageSchema.processedAt)
-        )
-      );
+    return await this.database.transaction(async (trx) => {
+      // @see https://www.ibm.com/docs/en/informix-servers/14.10?topic=level-repeatable-read-isolation
+      await trx.execute(sql`SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;`);
 
-    return snapshots.map((s) => OutboxMessage.fromSnapshot(s));
+      // Pull unprocessed messages that are due for processing
+      const snapshots = await trx.execute(sql`
+        SELECT * FROM "outbox_messages"
+        WHERE occurred_at <= NOW() AND processed_at IS NULL
+        FOR UPDATE SKIP LOCKED;
+      `);
+
+      // Mark the pulled messages as processed to prevent concurrent processing
+      await trx
+        .update(outboxMessageSchema)
+        .set({ processedAt: sql`NOW()` })
+        .where(
+          inArray(
+            outboxMessageSchema.id,
+            snapshots.rows.map((s) => String(s.id))
+          )
+        );
+
+      return snapshots.rows.map((s) =>
+        OutboxMessage.fromSnapshot({
+          errorMessage: s.error_message as string | null,
+          eventType: s.event_type as string,
+          id: s.id as string,
+          payload: s.payload as Record<string, unknown>,
+          processedAt: s.processed_at as Date | null,
+        })
+      );
+    });
   }
 
   async save(messages: OutboxMessage[]) {

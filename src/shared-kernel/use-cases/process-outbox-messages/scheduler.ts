@@ -13,7 +13,7 @@ export class ProcessOutboxMessagesScheduler
   }
 
   onApplicationBootstrap() {
-    this._intervalId = setInterval(() => this.handle(), 1000);
+    this._intervalId = setInterval(() => this.handle(), 1);
   }
 
   onApplicationShutdown() {

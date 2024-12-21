@@ -39,7 +39,7 @@ export abstract class Entity<
   }
 
   snapshot() {
-    const snapshot = { ...this._properties };
+    const snapshot = { ...this._properties, id: this.id };
     return snapshot;
   }
 }
