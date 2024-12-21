@@ -1,6 +1,7 @@
 import { AggregateRoot } from "@shared-kernel/domain/primitives/aggregate-root.js";
 import { DateTime } from "luxon";
 import { ForgotPasswordRequestCreatedDomainEvent } from "./events/forgot-password-request-created.domain-event.js";
+import { ForgotPasswordRequestRefreshedDomainEvent } from "./events/forgot-password-request-refreshed.domain-event.js";
 
 interface Properties {
   accountId: string;
@@ -35,5 +36,11 @@ export class ForgotPasswordRequest extends AggregateRoot<Properties> {
   refresh() {
     this._properties.token = Math.random().toString(36).slice(2);
     this._properties.expiresAt = DateTime.now().plus({ days: 1 });
+
+    this.commit(
+      new ForgotPasswordRequestRefreshedDomainEvent({
+        payload: this.properties,
+      })
+    );
   }
 }

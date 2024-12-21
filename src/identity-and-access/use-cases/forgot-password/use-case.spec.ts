@@ -148,6 +148,53 @@ describe("ForgotPasswordUseCase", () => {
       },
     ]);
   });
+
+  it("should save a ForgotPasswordRequestRefreshedDomainEvent to the outbox upon refreshing a password reset request", async () => {
+    // Given
+    const {
+      allAccounts,
+      allForgotPasswordRequests,
+      allOutboxMessages,
+      useCase,
+    } = createSystemUnderTest();
+
+    const account = {
+      email: "dylan@call-me-dev.com",
+      password: "password",
+    };
+
+    const request = {
+      accountId: "1",
+      expiresAt: DateTime.now().plus({ days: 1 }),
+      id: "1",
+      token: "token",
+    };
+
+    allAccounts.snapshots.set(request.accountId, account);
+    allForgotPasswordRequests.snapshots.set(request.id, request);
+
+    // When
+    await useCase.execute({
+      email: account.email,
+    });
+
+    // Then
+    const snapshots = [...allOutboxMessages.snapshots.values()];
+    expect(snapshots).toEqual([
+      {
+        errorMessage: null,
+        eventType: "ForgotPasswordRequestRefreshedDomainEvent",
+        id: expect.any(String),
+        payload: {
+          accountId: "1",
+          expiresAt: DateTime.now().plus({ days: 1 }),
+          id: "1",
+          token: expect.any(String),
+        },
+        processedAt: null,
+      },
+    ]);
+  });
 });
 
 function createSystemUnderTest() {
